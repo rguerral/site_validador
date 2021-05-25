@@ -1,0 +1,41 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' bid.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+
+<h1>
+	Simular ofertas
+</h1>
+## NSIMS: numero de ofertas a simular<br>
+## P_FIELD_ERROR: probabilidad [0,1] de cometer error al llenar un campo<br>
+## P_EMPTY: probabilidad [0,1] de dejar un campo que debe llenar vacio<br>
+## P_EDIT_FIELD: probabilidad [0,1] de modificar al menos una celda que no debe ser modificada (celdas grises)
+<p>
+<form action="" method="post">
+	{% csrf_token %}
+    {% for field in form.visible_fields %}
+	    <div class="fieldWrapper">
+	        {{ field.errors }}
+	        {{ field.label_tag }}
+	        {{ field }}
+	    </div>
+	{% endfor %}
+	<input type="submit" value="Descargar">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:algorithms' bid.id %}';return false;">
+</form>
+{% endblock %}

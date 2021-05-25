@@ -1,0 +1,94 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% load catalog_extras %}
+
+{% block navbar %} 
+    <nav class="navbar navbar-default navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+           <a class="navbar-brand" href="{% url 'catalog:algorithms' bid.id%}">Algoritmos</a>
+        </li>
+        </ul>
+      </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+<h3>
+	{% for node in branch %}
+		<a href="{% url 'catalog:category_detail' node.id %}">{{node}}</a> 
+		>
+	{% endfor %}
+</h3>
+
+<h1> Agregar / actualizar producto </h1>
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    <h3> Nombre producto </h3>
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {{ form.name.errors }}
+
+    {% if attributes.nom_fix %}
+    	<h3>Atributos nominales fijo</h3>
+        {% for att in attributes.nom_fix %}
+        	<h4>{{att.full_str}}</h4>
+        	{% for form_field in att.get_form_fields %}
+        		{% for x in form|get_obj_attr:form_field %}
+        			{{x}}
+        		{% endfor %}
+        	{% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attributes.rat_fix %}
+        <h3>Atributos ratio fijo</h3>
+        {% for att in attributes.rat_fix %}
+        	<h4>{{att.full_str}}</h4>
+        	{% for form_field in att.get_form_fields %}
+        		{% for x in form|get_obj_attr:form_field %}
+        			{{x}}
+        		{% endfor %}
+        	{% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attributes.nom_unfix %}
+        <h3>Atributos nominales no-fijos</h3>
+        {% for att in attributes.nom_unfix %}
+        	<h4>{{att.full_str}}</h4>
+        	{% for form_field in att.get_form_fields %}
+        		{% for x in form|get_obj_attr:form_field %}
+        			{{x}}
+        		{% endfor %}
+        	{% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if attributes.rat_unfix %}
+    	<h3>Atributos ratio no-fijos</h3>
+        {% for att in attributes.rat_unfix %}
+        	<h4>{{att.full_str}}</h4>
+        	{% for form_field in att.get_form_fields %}
+        		{% for x in form|get_obj_attr:form_field %}
+        			{{x}}
+        		{% endfor %}
+        	{% endfor %}
+        {% endfor %}
+    {% endif %}
+    <br><br>
+	<input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
+  </form>
+</p>
+
+
+{% endblock %}

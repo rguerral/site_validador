@@ -1,0 +1,11 @@
+{% extends "base_bootstrap_nonavbar.html" %}
+{% block content %}
+<h1>Borrar Convenio</h1>
+
+<p>Are you sure you want to delete the category: {{ bid }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete.">
+</form>
+{% endblock %}

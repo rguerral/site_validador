@@ -1,0 +1,84 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' bid.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+
+<h3>
+	{% for node in branch %}
+		{% if node.level != bid.max_category_level %}
+			{{node}}
+			>
+		{% else %}
+			<a href="{% url 'catalog:category_detail' node.id %}">{{node}}</a> 
+			>
+		{% endif %}
+	{% endfor %}
+</h3>
+
+<h1> Agregar / actualizar atributo </h1>
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    {% for field in form.visible_fields %}
+    	{% if field != form.unit and field != form.attribute_type%}
+		    <div class="fieldWrapper">
+		        {{ field.errors }}
+		        {{ field.label_tag }}
+		        {{ field }}
+		    </div>
+		{% endif %}
+	{% endfor %}
+
+	<div class="fieldWrapper" id="attribute_type">
+		{{ form.attribute_type.label_tag }}
+		{{ form.attribute_type }}
+		{{ form.attribute_type.errors }}
+	</div>
+
+	<div class="fieldWrapper" id="unit" style="display:none">
+		{{ form.unit.label_tag }}
+		{{ form.unit }}
+		{{ form.unit.errors }}
+	</div>
+
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
+  </form>
+</p>
+
+
+<script type="text/javascript">
+	
+	function get_attribute_type(){
+		field = document.getElementById('id_attribute_type');
+		option = field.options[field.selectedIndex];
+		x = option.value;
+		if(x == "RATIO"){
+			document.getElementById('unit').style.display = '';
+		}
+		else{
+			document.getElementById('unit').style.display = 'none';
+		}
+	}
+
+	document.getElementById('id_attribute_type').addEventListener('change', get_attribute_type);
+</script>
+{% endblock %}

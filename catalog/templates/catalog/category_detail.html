@@ -1,0 +1,137 @@
+{% extends "base_bootstrap.html" %}
+
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' bid.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+
+<h3>
+	{% for node in branch %}
+		{% if node.level != bid.max_category_level %}
+			{{node}}
+			>
+		{% else %}
+			<a href="{% url 'catalog:category_detail' node.id %}">{{node}}</a> 
+			>
+		{% endif %}
+	{% endfor %}
+</h3>
+
+<h1>
+	{{ category.name }}
+	<a href="{% url 'catalog:category_update' category.id %}"><i class="fa fa-pencil-alt"></i></a>
+	<a href="{% url 'catalog:category_delete' category.id %}"><i class="fa fa-trash"></i></a>
+</h1>
+
+
+<div class="container">
+	<strong>Atributos</strong>
+	<br>
+	{% if attributes %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<td> NOMBRE </td>
+					<td> TIPO </td>
+					<td> FIJO </td>
+					<td> </td>
+					<td> </td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for attribute in attributes %}
+					<tr>
+						<td>{{attribute}}</td> 
+						<td>{{attribute.attribute_type}}</td>
+						<td>{{attribute.fixed}}</td>
+						<td><a href="{% url 'catalog:attribute_update' attribute.id %}"><i class="fa fa-pencil-alt"></i></a></td>
+						<td><a href="{% url 'catalog:attribute_delete' attribute.id %}"><i class="fa fa-trash"></i></a></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		Aún no existen atributos
+	{% endif %}
+	<p>
+	<a href="{% url 'catalog:attribute_create' category.id %}"><i class="fa fa-plus"></i>Agregar</a>
+	</p>
+
+</div>
+<br>
+
+<div class="container">
+	<strong>Productos</strong>
+	<br>
+	{% if table_data %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<td> MODELO </td>
+					{% for attribute in attributes %}
+						<td> {{attribute}}</td>
+					{% endfor %}
+					<td> </td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for dict in table_data %}
+					<tr>
+						<td>
+							{{dict.attributes.1.value.product}}
+						</td>
+
+						{% for attribute_value in dict.attributes %}
+							<td> 
+								{{attribute_value.value | truncatechars:20}}
+								{% if attribute_value.others %}
+									<br>
+									Otros?  
+									{% if attribute_value.others == True %}
+										<i class="fa fa-thumbs-up"></i>
+									{% else %}
+										<i class="fa fa-thumbs-down"></i>
+									{% endif %}
+								{% endif %}
+								{% if attribute_value.integer %}
+								<br>
+									Decimales?
+									{% if attribute_value.integer == True %}
+										<i class="fa fa-thumbs-down"></i> 
+									{% else %}
+										<i class="fa fa-thumbs-up"></i>
+									{% endif %}
+								{% endif %}
+							</td>
+						{% endfor %}
+						<td>
+							<a href="{% url 'catalog:attribute_create' category.id %}"><i class="fa fa-pencil-alt"></i></a>
+							<a href="{% url 'catalog:product_delete' dict.product.id %}"><i class="fa fa-trash"></i></a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+	{% else %}
+		Aún no existen productos
+	{% endif %}
+	<p>
+	<a href="{% url 'catalog:product_create' category.id %}"><i class="fa fa-plus"></i>Agregar</a>
+	</p>
+</div>
+
+
+{% endblock %}

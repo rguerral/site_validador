@@ -1,0 +1,309 @@
+{
+	"condiciones_comerciales":{
+		"max_products_alternatives": 3,
+		"min_products_alternatives": [
+			1,
+			["zones", "categories:levels:Tipo de Producto"]
+		]
+	},
+
+	"extras":{
+		"Transporte":{
+			"Despacho pequeño": {
+				"attributes_defined": {
+					"Rango precios": "de 0 a 100 kg"
+				},	
+				"attributes_asked": {
+					"Precio zona urbana": {
+						"type": "integer",
+						"range": [
+							1000,
+							50000
+						]
+					},
+					"Precio zona rural": {
+						"type": "integer",
+						"range": [
+							1000,
+							100000
+						]
+					}
+				}
+			},	
+			"Despacho mediano": {
+				"attributes_defined": {
+					"Rango precios": "de 100 a 500 kg"
+				},	
+				"attributes_asked": {
+					"Precio zona urbana": {
+						"type": "integer",
+						"range": [
+							1000,
+							100000
+						]
+					},
+					"Precio zona rural": {
+						"type": "integer",
+						"range": [
+							1000,
+							100000
+						]
+					}
+				}
+			},
+			"Despacho grande": {
+				"attributes_defined": {
+					"Rango precios": "sobre 500 kg"
+				},	
+				"attributes_asked": {
+					"Precio zona urbana": {
+						"type": "integer",
+						"range": [
+							1000,
+							200000
+						]
+					},
+					"Precio zona rural": {
+						"type": "integer",
+						"range": [
+							1000,
+							100000
+						]
+					}
+				}
+			}  
+		},
+
+		"Armado":{
+			"Dificultad baja": {
+				"attributes_asked": {
+					"Precio armado (CLP)": {
+						"type": "integer",
+						"range": [
+							0,
+							11990
+						]
+					}
+				}
+			},	
+			"Dificultad media": {
+				"attributes_asked": {
+					"Precio armado (CLP)": {
+						"type": "integer",
+						"range": [
+							0,
+							16990
+						]
+					}
+				}
+			}
+		}
+	},
+
+	"zones": [
+		"Macrozona Norte",
+		"Macrozona Centro",
+		"Macrozona Metropolitana",
+		"Macrozona Sur",
+		"Macrozona Austral"
+	],
+
+	"categories": {
+		"Computadores": [
+			"Notebook",
+			"Desktop"
+		],
+		"Accesorios": [
+			"Mouse"
+		]	
+	},
+
+	"products": {
+		"Notebook": 
+			[
+				{
+					"attributes_defined": {
+						"DISCO DURO": "256 GB"
+					},
+					"attributes_asked": {
+						"PRECIO": {
+							"type": "integer",
+							"range": [
+								2500,
+								750000
+							],
+						},
+						"MARCA": {
+							"type": "list_others",
+							"list": [
+								"TOSHIBA",
+								"LENOVO"
+							]
+						},
+						"MEMORIA RAM (GB)": {
+							"type": "integer",
+							"range": [
+								0,
+								16
+							]
+						},
+						"DISCO SSD?": {
+							"type": "list",
+							"list": [
+								"NO",
+								"SI"
+							]
+						}
+					}
+				}
+			]
+			"Gama alta": {
+				"attributes_defined": {
+					"DISCO DURO": "500 GB"
+				},
+				"attributes_asked": {
+					"PRECIO": {
+						"type": "integer",
+						"range": [
+							1000,
+							900000
+						]
+					},
+					"MARCA": {
+						"type": "list_others",
+						"list": [
+							"TOSHIBA",
+							"LENOVO"
+						]
+					},
+					"MEMORIA RAM (GB)": {
+						"type": "integer",
+						"range": [
+							16,
+							32
+						]
+					},
+					"DISCO SSD?": {
+						"type": "list",
+						"list": [
+							"SI"
+						]
+					}
+				}
+			}
+		},
+		"Desktop": {
+			"Gama media": {
+				"attributes_defined": {
+					"DISCO DURO": "256 GB"
+				},
+				"attributes_asked": {
+					"PRECIO": {
+						"type": "integer",
+						"range": [
+							2500,
+							750000
+						]
+					},
+					"MARCA": {
+						"type": "list_others",
+						"list": [
+							"TOSHIBA",
+							"LENOVO"
+						]
+					},
+					"MEMORIA RAM (GB)": {
+						"type": "integer",
+						"range": [
+							0,
+							16
+						]
+					},
+					"DISCO SSD?": {
+						"type": "list",
+						"list": [
+							"NO",
+							"SI"
+						]
+					}
+				}
+			},
+			"Gama alta": {
+				"attributes_defined": {
+					"DISCO DURO": "500 GB"
+				},
+				"attributes_asked": {
+					"PRECIO": {
+						"type": "integer",
+						"range": [
+							1000,
+							900000
+						]
+					},
+					"MARCA": {
+						"type": "list_others",
+						"list": [
+							"TOSHIBA",
+							"LENOVO"
+						]
+					},
+					"MEMORIA RAM (GB)": {
+						"type": "integer",
+						"range": [
+							16,
+							32
+						]
+					},
+					"DISCO SSD?": {
+						"type": "list",
+						"list": [
+							"SI"
+						]
+					}
+				}
+			}
+		},
+		"Mouse": {
+			"Cable largo": {
+				"attributes_defined": {
+					"LARGO DEL CABLE": "MÁS DE 3 METROS"
+				},
+				"attributes_asked": {
+					"PRECIO": {
+						"type": "integer",
+						"range": [
+							1000,
+							15000
+						]
+					},
+					"MARCA": {
+						"type": "list_others",
+						"list": [
+							"HP"
+						]
+					}
+				}
+			},
+			"Cable corto": {
+				"attributes_defined": {
+					"LARGO DEL CABLE": "150 CM"
+				},
+				"attributes_asked": {
+					"PRECIO": {
+						"type": "integer",
+						"range": [
+							1000,
+							15000
+						]
+					},
+					"MARCA": {
+						"type": "list_others",
+						"list": [
+							"HP"
+						]
+					}
+				}
+			}
+		}
+	}
+}

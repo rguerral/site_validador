@@ -1,0 +1,27 @@
+{% extends "base_bootstrap.html" %}
+
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' attribute.category.bid.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' attribute.category.bid.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Eliminar atributo</h1>
+
+<p>Are you sure you want to delete the atributo: {{ attribute }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete.">
+</form>
+{% endblock %}

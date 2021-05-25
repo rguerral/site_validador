@@ -1,0 +1,36 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' bid.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+	<p>
+	  <form action="" method="post">
+	    {% csrf_token %}
+    	{{ form.non_field_errors }}
+
+    	<div class="fieldWrapper" id="name">
+			{{ form.name.label_tag }}
+			{{ form.name }}
+			{{ form.name.errors }}
+		</div>
+
+
+	    <input type="submit" value="Submit">
+	    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:categories' bid.id %}';return false;">
+	  </form>
+	</p>
+
+{% endblock %}

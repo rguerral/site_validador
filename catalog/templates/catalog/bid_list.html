@@ -1,0 +1,23 @@
+{% extends "base_bootstrap_nonavbar.html" %}
+{% block content %}
+<h1>Convenios</h1>
+<p>
+{% if bid_list %}
+<ul>
+    {% for bid in bid_list %}
+			<li>
+	        <a href="{% url 'catalog:categories' bid.id %}">{{ bid }}</a>
+	        (<a href="{% url 'catalog:bid_update' bid.id %}">Edit</a> |
+	        <a href="{% url 'catalog:bid_delete' bid.id %}">Delete</a>)
+	    	</li>
+	{% endfor %}
+</ul>
+
+{% else %}
+  <p>Aún no hay Convenios.</p>
+{% endif %}
+</p>
+<p>
+<a href="{% url 'catalog:bid_create' %}">Agregar Convenio</a> |
+</p>
+{% endblock %}
