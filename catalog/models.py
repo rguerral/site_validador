@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 class Bid(models.Model):
 	name = models.CharField(max_length = 256, unique = True)
@@ -45,6 +46,74 @@ class Zone(models.Model):
 		self.name = self.name.strip().upper()
 		super(Zone,self).save(*args, **kwargs)
 
+class Dimension(models.Model):
+	name = models.CharField(max_length = 64, unique = True)
+
+	def __str__(self):
+		return self.name
+
+	def save(self, *args, **kwargs):
+		self.name = self.name.upper()
+		super(Dimension,self).save(*args, **kwargs)
+
+class Unit(models.Model):
+	name = models.CharField(max_length = 64, unique = True)
+	abbreviation = models.CharField(max_length = 8, unique = True)
+	is_base = models.BooleanField()
+	to_base = models.FloatField()
+	currency = models.BooleanField(default = False)
+	dimension = models.ForeignKey(Dimension, 
+								on_delete = models.CASCADE,
+								related_name = 'units'
+		)
+	# syn = ...
+	def __str__(self):
+		return self.name
+
+	def save(self, *args, **kwargs):
+		self.name = self.name.upper()
+		super(Unit,self).save(*args, **kwargs)
+
+class BidAttribute(models.Model):
+	name = models.CharField(max_length = 64, unique = True)
+	bid = models.ForeignKey(Bid, related_name = 'attributes', on_delete = models.CASCADE)
+	zone_or_global = models.CharField(max_length = 8,
+									choices = [("ZONA", "ZONA"),
+												("NACIONAL", "NACIONAL")])
+	unit = models.ForeignKey(
+		Unit,
+		on_delete = models.CASCADE,
+		limit_choices_to={'currency': True}
+		)
+
+	def __str__(self):
+		return str(self.bid) + "-" + str(self.name)
+
+	class Meta:
+		unique_together = [['name', 'bid']]
+
+	def save(self, *args, **kwargs):
+		self.name = self.name.upper().strip()
+		super(BidAttribute, self).save(*args, **kwargs)
+
+class BidAttributeLevel(models.Model):
+	bidattribute = models.ForeignKey(BidAttribute, related_name = "price_zones", on_delete = models.CASCADE)
+	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
+	levelname = models.CharField(max_length = 128)
+	minprice = models.IntegerField()
+	maxprice = models.IntegerField()
+
+	def __str__(self):
+		return str(self.bidattribute) + "-" + str(zone)
+
+	class Meta:
+		unique_together = [['bidattribute', 'zone', 'levelname']]
+
+	def save(self, *args, **kwargs):
+		if self.minprice >= self.maxprice:
+			raise ValidationError("El valor mínimo debe ser mayor al valor máximo")
+		super(PriceBidAttributeZone,self).save(*args, **kwargs)
+
 class Category(models.Model):
 	name = models.CharField(max_length = 200, unique = True)
 	tree_name = models.CharField(max_length = 200, unique = True)
@@ -67,7 +136,7 @@ class Category(models.Model):
 		unique_together = [['name', 'bid']]
 
 	def save(self, *args, **kwargs):
-		self.name = self.name.strip()
+		self.name = self.name.upper().strip()
 		parent = self.parent
 		self.update_position()
 		self.update_tree_name()
@@ -137,33 +206,6 @@ class Product(models.Model):
 		self.name = self.name.upper()
 		super(Product,self).save(*args, **kwargs)
 
-class Dimension(models.Model):
-	name = models.CharField(max_length = 64, unique = True)
-
-	def __str__(self):
-		return self.name
-
-	def save(self, *args, **kwargs):
-		self.name = self.name.upper()
-		super(Dimension,self).save(*args, **kwargs)
-
-class Unit(models.Model):
-	name = models.CharField(max_length = 64, unique = True)
-	abbreviation = models.CharField(max_length = 8, unique = True)
-	is_base = models.BooleanField()
-	to_base = models.FloatField()
-	dimension = models.ForeignKey(Dimension, 
-								on_delete = models.CASCADE,
-								related_name = 'units'
-		)
-	# syn = ...
-	def __str__(self):
-		return self.name
-
-	def save(self, *args, **kwargs):
-		self.name = self.name.upper()
-		super(Unit,self).save(*args, **kwargs)
-
 class Attribute(models.Model):
 	name = models.CharField(max_length = 64)
 	category = models.ForeignKey(Category,
@@ -209,7 +251,7 @@ class Attribute(models.Model):
 					'ruf_{}_max'.format(self.name),
 					'ruf_{}_integer'.format(self.name)]
 		else:
-			raise ValueError()
+			raise ValidationError()
 
 class FixedNominalValue(models.Model):
 	value = models.CharField(max_length = 64)
@@ -273,3 +315,8 @@ class RatioConfig(models.Model):
 	def __str__(self):
 		unit = self.attribute.unit
 		return "{}-{}({})".format(self.minval,self.maxval,unit)
+
+	def save(self, *args, **kwargs):
+		if self.minval >= self.maxval:
+			raise ValidationError("El valor mínimo debe ser mayor al valor máximo")
+		super(RatioConfig,self).save(*args, **kwargs)

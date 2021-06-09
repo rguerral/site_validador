@@ -20,8 +20,20 @@ urlpatterns = [
         views.BidDelete.as_view(),
          name='bid_delete'),
 
+    path('bid/<int:pk>/create_bidattribute',
+        views.BidAttributeCreate.as_view(),
+        name='bidattribute_create'),
+
+    path('bidattribute/<int:pk>/update',
+        views.BidAttributeUpdate.as_view(),
+        name='bidattribute_update'),
+
+    path('bidattribute/<int:pk>/delete',
+        views.BidAttributeDelete.as_view(),
+        name='bidattribute_delete'),
+
     path('bid/<int:pk>',
-        views.CategoryList.as_view(),
+        views.BidDetail.as_view(),
         name='categories'),
 
     path('category/<int:pk>',

@@ -1,0 +1,27 @@
+{% extends "base_bootstrap.html" %}
+
+{% block navbar %} 
+	<nav class="navbar navbar-default navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="{% url 'catalog:categories' bidattribute.id%}">Catálogo</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	        <li>
+	       <a class="navbar-brand" href="{% url 'catalog:algorithms' bidattribute.id %}">Algoritmos</a>
+	    </li>
+	    </ul>
+	  </div>
+	</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Borrar atributo del convenio</h1>
+
+<p>Estas seguro que quieres eliminar el atributo: {{ bidattribute.name }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Si, eliminar.">
+</form>
+{% endblock %}

@@ -18,8 +18,39 @@
 
 {% block content %}
 	<h1>{{bid}}</h1>
-	<h2> Categorías </h2>
+	<h2> Atributos convenio </h2>
+	<p>
+		<a href="{% url 'catalog:bidattribute_create' bid.id %}"><i class="fa fa-plus"></i> Agregar Atributo</a>
+	</p>
+	<p>
+		{% if bidattribute_list %}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td> NOMBRE </td>
+						<td> </td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for bidattribute in bidattribute_list %}
+						<tr>
+							<td> {{bidattribute.name}} </td>
+							<td>
+								<a href="{% url 'catalog:bidattribute_update' bidattribute.id %}"><i class="fa fa-pencil-alt"></i></a>
+								&nbsp;
+								<a href="{% url 'catalog:bidattribute_delete' bidattribute.id %}"><i class="fa fa-trash"></i></a> 
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			Aún no hay atributos para este convenio
+		{% endif %}
+	</p>
 
+
+	<h2> Categorías </h2>
 	<p>
 		<a href="{% url 'catalog:category_create' root_category.id %}"><i class="fa fa-plus"></i> Agregar categoría nivel 1</a>
 	</p>

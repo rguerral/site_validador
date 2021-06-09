@@ -7,7 +7,8 @@ def run():
 				"abbreviation": "CLP",
 				"is_base": True,
 				"to_base": 1,
-				"synonyms": []
+				"synonyms": [],
+				"currency": True
 			}
 		},
 		"TAMAÑO DATO":{
@@ -15,7 +16,8 @@ def run():
 				"abbreviation": "GB",
 				"is_base": True,
 				"to_base": 1,
-				"synoyms": []
+				"synoyms": [],
+				"currency": False
 			}
 		},
 		"LONGITUD":{
@@ -23,13 +25,15 @@ def run():
 				"abbreviation": "M",
 				"is_base": True,
 				"to_base": 1,
-				"synonyms": []
+				"synonyms": [],
+				"currency": False
 			},
 			"CENTIMETRO":{
 				"abbreviation": "CM",
 				"is_base": False,
 				"to_base": 0.01,
-				"synonyms": []
+				"synonyms": [],
+				"currency": False
 			}
 		},
 		"MASA":{
@@ -37,13 +41,15 @@ def run():
 				"abbreviation": "GR",
 				"is_base": True,
 				"to_base": 1,
-				"synonyms": []
+				"synonyms": [],
+				"currency": False
 			},
 			"KILOGRAMO":{
 				"abbreviation": "KG",
 				"is_base": False,
 				"to_base": 1000,
-				"synonyms": []
+				"synonyms": [],
+				"currency": False
 			}
 		}
 	}
@@ -58,5 +64,6 @@ def run():
 				abbreviation = unit_dict["abbreviation"],
 				is_base = unit_dict["is_base"],
 				to_base = unit_dict["to_base"],
-				dimension = dimension
+				dimension = dimension,
+				currency = unit_dict["currency"]
 				)

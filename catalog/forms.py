@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from catalog.models import Attribute, Product, Bid, Category
+from catalog.models import Attribute, Product, Bid, Category, Unit, Dimension, BidAttribute
 
 class BidForm(forms.Form):
 	name = forms.CharField()
@@ -45,12 +45,65 @@ class BidForm(forms.Form):
 	def clean(self):
 		cleaned_data = super().clean()
 		min_products_category_level = cleaned_data.get("min_products_category_level")
-		print(type(min_products_category_level))
 		max_category_level = cleaned_data.get("max_category_level")
 		if min_products_category_level > max_category_level:
 			raise ValidationError(
 					"No se cumple min_products_category_level <= max_category_level"
 				)
+
+class BidAttributeForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+		self.bid = kwargs.pop('bid')
+		self.zones = kwargs.pop('zones')
+		self.form_auxdata = kwargs.pop('form_auxdata')
+		super(BidAttributeForm, self).__init__(*args, **kwargs)
+		self.fields["name"] = forms.CharField()
+		self.fields["zone_or_global"] = forms.ChoiceField(
+			choices = [
+				["ZONA", "ZONA"],
+				["NACIONAL", "NACIONAL"],
+			]
+			)
+		self.fields["unit"] = forms.ModelChoiceField(queryset=Unit.objects.filter(dimension = Dimension.objects.get(name = "MONEDA")))
+		self.fields["global_minprice"] = forms.IntegerField(min_value = 0, required = False)
+		self.fields["global_maxprice"] = forms.IntegerField(min_value = 0, required = False)
+
+
+		for zone in self.zones:
+			self.fields['{}_minprice'.format(zone)] = forms.IntegerField(min_value = 0, required = False, label = "Precio minimo")
+			self.fields['{}_maxprice'.format(zone)] = forms.IntegerField(min_value = 0, required = False, label = "Precio maximo")
+
+	def clean(self):
+		cleaned_data = super().clean()
+		zone_or_global = cleaned_data.get("zone_or_global")
+		name = cleaned_data.get("name")
+
+		if BidAttribute.objects.filter(bid = self.bid, name = name):
+			raise ValidationError(
+				"Ya existe un atributo con ese nombre"
+			)
+
+		if zone_or_global == "NACIONAL":
+			global_minprice = cleaned_data.get("global_minprice")
+			global_maxprice = cleaned_data.get("global_maxprice")
+			if global_minprice >= global_maxprice:
+				raise ValidationError(
+					"global_minprice >= global_maxprice"
+				)
+		elif zone_or_global == "ZONA":
+			for zone in self.zones:
+				minprice = cleaned_data.get("{}_minprice".format(zone))
+				maxprice = cleaned_data.get("{}_maxprice".format(zone))
+				if minprice >= maxprice:
+					raise ValidationError(
+						"{}_minprice >= {}_maxprice".format(zone,zone)
+					)
+		else:
+			print(zone_or_global)
+			raise ValidationError(
+				"Campo zone_or_global debería ser 'NACIONAL' o 'ZONA'"
+			)
+		return cleaned_data
 
 class CategoryForm(forms.Form):
 	name = forms.CharField()
@@ -147,7 +200,6 @@ class ProductForm(forms.Form):
 		cleaned_data = self.cleaned_data
 		name = cleaned_data.get("name")
 		return name.upper().strip()
-
 
 class SimulateForm(forms.Form):
 	nsims = forms.IntegerField(min_value = 1, max_value = 500)

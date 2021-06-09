@@ -1,0 +1,88 @@
+{% extends "base_bootstrap_nonavbar.html" %}
+{% load crispy_forms_tags %}
+{% load catalog_extras %}
+{% block content %}
+<p>
+	  <form action="" method="post">
+	    {% csrf_token %}
+    	{{ form.non_field_errors }}
+
+    	<div class="fieldWrapper" id="name">
+			{{ form.name.label_tag }}
+			{{ form.name }}
+			{{ form.name.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="zone_or_global">
+			{{ form.zone_or_global.label_tag }}
+			{{ form.zone_or_global }}
+			{{ form.zone_or_global.errors }}
+		</div>
+
+
+		<div class="fieldWrapper" id="levels">
+			{{ form.levels.label_tag }}
+			{{ form.levels }}
+			{{ form.levels.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="unit">
+			{{ form.unit.label_tag }}
+			{{ form.unit }}
+			{{ form.unit.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="global_fields" style="display:none">
+			<div class="fieldWrapper" id="global_minprice">
+				{{ form.global_minprice.label_tag }}
+				{{ form.global_minprice }}
+				{{ form.global_minprice.errors }}
+			</div>
+
+			<div class="fieldWrapper" id="global_maxprice">
+				{{ form.global_maxprice.label_tag }}
+				{{ form.global_maxprice }}
+				{{ form.global_maxprice.errors }}
+			</div>
+		</div>
+
+		<div class="fieldWrapper" id="zone_fields" style="display:none">
+			{% for x in form_auxdata %}
+				{{x.name}}
+				<br>
+				{% for y in form|get_obj_attr:x.min_price_field %}
+        			{{y}}
+        		{% endfor %}
+				{% for y in form|get_obj_attr:x.max_price_field %}
+        			{{y}}
+        		{% endfor %}
+
+				<br>
+			{% endfor %}
+		</div>
+
+	    <input type="submit" value="Submit">
+	    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:categories' bid.id %}';return false;">
+	  </form>
+</p>
+
+<script type="text/javascript">
+	
+	function get_zone_or_global(){
+		field = document.getElementById('id_zone_or_global');
+		option = field.options[field.selectedIndex];
+		x = option.value;
+		if(x == "NACIONAL"){
+			document.getElementById('global_fields').style.display = '';
+			document.getElementById('zone_fields').style.display = 'none';
+		}
+		else{
+			document.getElementById('global_fields').style.display = 'none';
+			document.getElementById('zone_fields').style.display = '';
+		}
+	}
+	get_zone_or_global()
+	document.getElementById('id_zone_or_global').addEventListener('change', get_zone_or_global);
+</script>
+
+{% endblock %}

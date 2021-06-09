@@ -2,11 +2,49 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <p>
-  <form action="" method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" value="Submit">
-    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:bids' %}';return false;">
-  </form>
+	  <form action="" method="post">
+	    {% csrf_token %}
+    	{{ form.non_field_errors }}
+
+    	<div class="fieldWrapper" id="name">
+			{{ form.name.label_tag }}
+			{{ form.name }}
+			{{ form.name.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="max_category_level">
+			{{ form.max_category_level.label_tag }}
+			{{ form.max_category_level }}
+			{{ form.max_category_level.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="zones">
+			{{ form.zones.label_tag }}
+			{{ form.zones }}
+			{{ form.zones.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="max_products_alternatives">
+			{{ form.max_products_alternatives.label_tag }}
+			{{ form.max_products_alternatives }}
+			{{ form.max_products_alternatives.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="min_products_category_level">
+			{{ form.min_products_category_level.label_tag }}
+			{{ form.min_products_category_level }}
+			{{ form.min_products_category_level.errors }}
+		</div>
+
+		<div class="fieldWrapper" id="min_products_n">
+			{{ form.min_products_n.label_tag }}
+			{{ form.min_products_n }}
+			{{ form.min_products_n.errors }}
+		</div>
+
+		
+	    <input type="submit" value="Submit">
+	    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:bids'%}';return false;">
+	  </form>
 </p>
 {% endblock %}

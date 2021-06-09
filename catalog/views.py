@@ -1,17 +1,16 @@
 from django.shortcuts import render
-from catalog.models import Bid, Zone, Category, Attribute, Product, NominalConfig, RatioConfig, NominalValue, FixedNominalValue, FixedRatioValue
+from catalog.models import Bid, Zone, Category, Attribute, Product, NominalConfig, RatioConfig, NominalValue, FixedNominalValue, FixedRatioValue, BidAttribute, PriceBidAttributeZone
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView, FormView,TemplateView
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from catalog.forms import AttributeForm, ProductForm, SimulateForm, BidForm, CategoryForm
+from catalog.forms import AttributeForm, ProductForm, SimulateForm, BidForm, CategoryForm, BidAttributeForm
 from scripts.build_json import build_json
 from scripts.bid_excel_template import bid_excel_template
 from scripts.simulate_bids import simulate_bids
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 import django_tables2 as tables
 from django.http import JsonResponse, HttpResponse
-
 
 
 class BidList(ListView):
@@ -54,9 +53,9 @@ class BidDelete(DeleteView):
 	template_name = "catalog/bid_confirm_delete.html"
 	success_url=reverse_lazy('catalog:bids')
 
-class CategoryList(ListView):
-	model = Category
-	template_name = "catalog/category_list.html"
+class BidDetail(ListView):
+	model = Bid
+	template_name = "catalog/bid_detail.html"
 
 	def get(self, request, pk):
 		bid = get_object_or_404(Bid, pk=pk)
@@ -65,10 +64,153 @@ class CategoryList(ListView):
 		for category in category_list:
 			category.update_tree_name()
 			category.save()
+		bidattribute_list = BidAttribute.objects.filter(bid = bid)
 		context = {"category_list": category_list,
 					"root_category": root_category,
+					"bidattribute_list": bidattribute_list,
 					"bid" : bid}
 		return render(request, self.template_name, context)
+
+class BidAttributeCreate(FormView):
+	form_class = BidAttributeForm
+	template_name = "catalog/bidattribute_form.html"
+
+	def get_form_kwargs(self):
+		kwargs = super(BidAttributeCreate, self).get_form_kwargs()
+		bid = get_object_or_404(Bid, pk=self.kwargs['pk'])
+		zones = bid.zones.all()
+		kwargs["bid"] = bid
+		kwargs["zones"] = zones
+		form_auxdata = [{"name": x,
+						"min_price_field": '{}_minprice'.format(str(x)),
+						"max_price_field": '{}_maxprice'.format(str(x)) } for x in zones]
+		kwargs["form_auxdata"] = form_auxdata
+		return kwargs
+
+	def get_context_data(self, **kwargs):
+		context = super(BidAttributeCreate, self).get_context_data()
+		kwargs = self.get_form_kwargs()
+		context['bid'] = kwargs['bid']
+		context['zones'] = kwargs['zones']
+		context['form_auxdata'] = kwargs['form_auxdata']
+		return context
+
+	def get_success_url(self, **kwargs):
+		bid = self.get_form_kwargs()["bid"]
+		return reverse('catalog:categories', kwargs={'pk':bid.id})
+
+	def form_valid(self, form):
+		kwargs = self.get_form_kwargs()
+		bid = kwargs["bid"]
+		zones = kwargs["zones"]
+		name = form.cleaned_data.get('name')
+		zone_or_global = form.cleaned_data.get('zone_or_global')
+		unit = form.cleaned_data.get('unit')
+		if zone_or_global == "NACIONAL":
+			global_minprice = form.cleaned_data.get('global_minprice')
+			global_maxprice = form.cleaned_data.get('global_maxprice')
+			BidAttribute(
+				bid = bid,
+				name = name,
+				zone_or_global = zone_or_global,
+				unit = unit,
+				global_minprice = global_minprice,
+				global_maxprice = global_maxprice
+				).save()
+
+		else:
+			bidattribute = BidAttribute(
+				bid = bid,
+				name = name,
+				zone_or_global = zone_or_global,
+				unit = unit)
+			bidattribute.save()
+			for zone in zones:
+				minprice = form.cleaned_data.get('{}_minprice'.format(zone))
+				maxprice = form.cleaned_data.get('{}_maxprice'.format(zone))
+				PriceBidAttributeZone(
+					bidattribute = bidattribute,
+					zone = zone,
+					minprice = minprice,
+					maxprice = maxprice).save()
+		return super(BidAttributeCreate, self).form_valid(form)
+
+class BidAttributeUpdate(FormView):
+	form_class = BidAttributeForm
+	template_name = "catalog/bidattribute_form.html"
+
+	def get_form_kwargs(self):
+		kwargs = super(BidAttributeUpdate, self).get_form_kwargs()
+		bidattribute = get_object_or_404(BidAttribute, pk=self.kwargs['pk'])
+		bid = bidattribute.bid
+		zones = bid.zones.all()
+		kwargs["bid"] = bid
+		kwargs["zones"] = zones
+		form_auxdata = [{"name": x,
+						"min_price_field": '{}_minprice'.format(str(x)),
+						"max_price_field": '{}_maxprice'.format(str(x)) } for x in zones]
+		kwargs["form_auxdata"] = form_auxdata
+		return kwargs
+
+	def get_context_data(self, **kwargs):
+		context = super(BidAttributeUpdate, self).get_context_data()
+		kwargs = self.get_form_kwargs()
+		bidattribute = get_object_or_404(BidAttribute, pk=self.kwargs['pk'])
+		context['bidattribute'] = bidattribute
+		context['bid'] = kwargs['bid']
+		context['zones'] = kwargs['zones']
+		context['form_auxdata'] = kwargs['form_auxdata']
+
+		# Prefill form
+		if bidattribute.zone_or_global == "NACIONAL":
+			prefilled_form = BidAttributeForm(
+				initial = {
+					'name': bidattribute.name,
+					'zone_or_global': bidattribute.zone_or_global,
+					'unit': bidattribute.unit,
+					'global_minprice': bidattribute.global_minprice,
+					'global_maxprice': bidattribute.global_maxprice,
+				},
+				bid = kwargs['bid'],
+				zones = kwargs["zones"],
+				form_auxdata = kwargs["form_auxdata"]
+			)
+			context["form"] = prefilled_form
+
+		else:
+			price_zones = bidattribute.price_zones.all()
+			initial_dict = {}
+			for price_zone in price_zones:
+				initial_dict["{}_minprice".format(price_zone.zone)] = price_zone.minprice
+				initial_dict["{}_maxprice".format(price_zone.zone)] = price_zone.maxprice
+			initial_dict['name'] = bidattribute.name
+			initial_dict['zone_or_global'] = bidattribute.zone_or_global
+			initial_dict['unit'] = bidattribute.unit
+
+			prefilled_form = BidAttributeForm(
+				initial = initial_dict,
+				bid = kwargs['bid'],
+				zones = kwargs["zones"],
+				form_auxdata = kwargs["form_auxdata"]
+			)
+			context["form"] = prefilled_form
+		return context
+
+	def get_success_url(self, **kwargs):
+		bidattribute = get_object_or_404(BidAttribute, pk=self.kwargs['pk'])
+		return reverse('catalog:categories', kwargs={'pk':bidattribute.bid.id})
+
+	def form_valid(self, form):
+		print("aaaaaabbb")
+		return super(BidAttributeUpdate, self).form_valid(form)
+
+class BidAttributeDelete(DeleteView):
+	model = BidAttribute
+	template_name = "catalog/bidattribute_confirm_delete.html"
+
+	def get_success_url(self, **kwargs):
+		bidattribute = get_object_or_404(BidAttribute, pk=self.kwargs['pk'])
+		return reverse('catalog:categories', kwargs={'pk':bidattribute.bid.id})
 
 class CategoryDetail(DetailView):
 	model = Category
@@ -386,7 +528,6 @@ class Simulate(FormView):
 							NSIMS = nsims,
 							P_FIELD_ERROR = p_field_error,
 							P_EMPTY = p_empty)
-		print("bbb")
 		filename = 'simulacion_{}.zip'.format(str(bid))
 		response = HttpResponse(
 					zip_file,
@@ -394,8 +535,6 @@ class Simulate(FormView):
 				)
 		response['Content-Disposition'] = 'attachment; filename=%s' % filename
 		return response
-
-
 
 def BuildJson(request, *args, **kwargs):
 	bid = get_object_or_404(Bid, pk=kwargs['pk'])
