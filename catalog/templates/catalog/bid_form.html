@@ -1,6 +1,16 @@
-{% extends "base_bootstrap_nonavbar.html" %}
+{% extends "base_bootstrap.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<br>
+<h4>
+	<a href="{% url 'catalog:bids'%}">
+		<i class="fa fa-chevron-circle-left"></i> 
+		Volver
+	</a>
+</h4>
+<h1>
+	Agregar / actualizar Convenio
+</h1>
 <p>
 	  <form action="" method="post">
 	    {% csrf_token %}

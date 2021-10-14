@@ -1,0 +1,43 @@
+{% extends "base_bootstrap_nonavbar.html" %}
+
+{% block content %}
+	<br>
+	<h4>
+		<a href="{% url 'catalog:bid_detail' bid.id %}">
+			<i class="fa fa-chevron-circle-left"></i> 
+			Volver
+		</a>
+	</h4>
+
+	<h1> Categorías </h1>
+	<
+
+	{% if category_list %}
+	<ul style="list-style-type:none">
+	    {% for category in category_list %}
+				<li>
+		   
+		        {% if category.level < category.bid.max_category_level %}
+		        	{{ category.tree_name}}
+		        	&nbsp;
+					<a href="{% url 'catalog:category_create' category.id %}"><i class="fa fa-plus"></i></a>
+				{% else %}
+					<a href="{% url 'catalog:category_detail' category.id %}">{{ category.tree_name }}</a>
+					&nbsp;
+				{% endif %}
+				<a href="{% url 'catalog:category_update' category.id %}"><i class="fa fa-pencil-alt"></i></a>
+				<a href="{% url 'catalog:category_delete' category.id %}"><i class="fa fa-trash"></i></a> 
+
+		    	</li>
+		{% endfor %}
+	</ul>
+
+	{% else %}
+	  <p><em>Aún no hay categorías.</em></p>
+	{% endif %}
+
+
+	<a href="{% url 'catalog:category_create' root_category.id %}"><i class="fa fa-plus"></i> 
+	Agregar categoría nivel 1</a>
+
+{% endblock %}

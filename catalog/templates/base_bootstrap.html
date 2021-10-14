@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
@@ -32,21 +32,6 @@
     <div class="container">
 
     {% block navbar %} 
-
-    <nav class="navbar navbar-default navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'catalog:categories' bid.id%}">Catálogo</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li>
-           <a class="navbar-brand" href="{% url 'catalog:algorithms' %}">Algoritmos</a>
-        </li>
-        </ul>
-      </div>
-    </nav>
-
-
     {% endblock %}
     {% block welcome %} {% endblock %}
     {% block messages %}

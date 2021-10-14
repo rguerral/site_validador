@@ -4,15 +4,15 @@
 <br>
 
 <h4>
-	<a href="{% url 'catalog:bid_detail' bidattribute.bid.id %}">
+	<a href="{% url 'catalog:bidattribute_detail' bidattributelevel.bidattribute.id %}">
 		<i class="fa fa-chevron-circle-left"></i> 
 		Volver
 	</a>
 </h4>
 
-<h1>Borrar atributo del convenio</h1>
+<h1>Borrar Nivel de Atributo</h1>
 
-<p>¿Quieres eliminar el atributo {{ bidattribute.name }}?</p>
+<p>¿Quieres eliminar el nivel de atributo {{ bidattributelevel.name }}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

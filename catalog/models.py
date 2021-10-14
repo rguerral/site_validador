@@ -31,7 +31,7 @@ class Bid(models.Model):
 	def save(self, *args, **kwargs):
 		self.name = self.name.strip().upper()
 		super(Bid,self).save(*args, **kwargs)
-
+ 
 class Zone(models.Model):
 	name = models.CharField(max_length = 256)
 	bid = models.ForeignKey(Bid, related_name = 'zones', on_delete = models.CASCADE)
@@ -97,26 +97,27 @@ class BidAttribute(models.Model):
 		super(BidAttribute, self).save(*args, **kwargs)
 
 class BidAttributeLevel(models.Model):
-	bidattribute = models.ForeignKey(BidAttribute, related_name = "price_zones", on_delete = models.CASCADE)
+	bidattribute = models.ForeignKey(BidAttribute, related_name = "levels", on_delete = models.CASCADE)
 	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
-	levelname = models.CharField(max_length = 128)
+	name = models.CharField(max_length = 128)
 	minprice = models.IntegerField()
 	maxprice = models.IntegerField()
 
 	def __str__(self):
-		return str(self.bidattribute) + "-" + str(zone)
+		return str(self.bidattribute) + "-" + self.name + "-" + str(self.zone)
 
 	class Meta:
-		unique_together = [['bidattribute', 'zone', 'levelname']]
+		unique_together = [['bidattribute', 'zone', 'name']]
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.upper().strip()
 		if self.minprice >= self.maxprice:
 			raise ValidationError("El valor mínimo debe ser mayor al valor máximo")
-		super(PriceBidAttributeZone,self).save(*args, **kwargs)
+		super(BidAttributeLevel,self).save(*args, **kwargs)
 
 class Category(models.Model):
-	name = models.CharField(max_length = 200, unique = True)
-	tree_name = models.CharField(max_length = 200, unique = True)
+	name = models.CharField(max_length = 200)
+	tree_name = models.CharField(max_length = 200)
 	position = models.CharField(max_length = 16, null = True)
 	level = models.IntegerField()
 	parent = models.ForeignKey('self',
@@ -147,11 +148,11 @@ class Category(models.Model):
 		if self.level == 0:
 			self.tree_name = "ROOT"
 		else:
-			self.tree_name = (self.level-1)*tab +" "+ self.position + " " + self.name
+			self.tree_name = (self.level-1)*tab +" "+ self.position + ". " + self.name
 		
 	def get_brothers_position(self):
 		if self.level == 1:
-			brothers = Category.objects.filter(level = 1)
+			brothers = Category.objects.filter(level = 1, bid = self.bid)
 		else:
 			brothers = self.parent.children.all().order_by('created_at')
 		try:
@@ -221,6 +222,10 @@ class Attribute(models.Model):
 								on_delete = models.PROTECT,
 								null = True,
 								blank = True)
+
+	zone_or_global = models.CharField(max_length = 8,
+									choices = [("ZONA", "ZONA"),
+												("NACIONAL", "NACIONAL")])
 	class Meta:
 		unique_together = [['name', 'category']]
 
@@ -240,22 +245,90 @@ class Attribute(models.Model):
 		super(Attribute,self).save(*args, **kwargs)
 
 	def get_form_fields(self):
+		# nominal fixed
 		if self.fixed == "SI" and self.attribute_type == "NOMINAL":
-			return ['nf_{}_value'.format(self.name)]
+			if self.zone_or_global == "NACIONAL":
+				return [{
+						"zone": None,
+						"fields": ['nf_{}_global_value'.format(self.name)]
+						}]
+			else:
+				aux = []
+				for zone in self.category.bid.zones.all():
+					aux.append({
+						"zone": zone,
+						"fields": ['nf_{}_{}_value'.format(self.name, zone.name)]
+						})
+				return aux
 		elif self.fixed == "SI" and self.attribute_type == "RATIO":
-			return ['rf_{}_value'.format(self.name)]
+			if self.zone_or_global == "NACIONAL":
+				return [{
+						"zone": None,
+						"fields": ['rf_{}_global_value'.format(self.name)]
+						}]
+			else:
+				aux = []
+				for zone in self.category.bid.zones.all():
+					aux.append({
+						"zone": zone,
+						"fields": ['rf_{}_{}_value'.format(self.name, zone.name)]
+						})
+				return aux
 		elif self.fixed == "NO" and self.attribute_type == "NOMINAL":
+			if self.zone_or_global == "NACIONAL":
+				return [{
+						"zone": None,
+						"fields": [
+							'nuf_{}_global_values'.format(self.name),
+							'nuf_{}_global_others'.format(self.name)
+							]
+						}]
+			else:
+				aux = []
+				for zone in self.category.bid.zones.all():
+					aux.append({
+						"zone": zone,
+						"fields": [
+							'nuf_{}_{}_values'.format(self.name, zone.name),
+							'nuf_{}_{}_others'.format(self.name, zone.name)
+							]
+						})
+				return aux
+
 			return ['nuf_{}_values'.format(self.name), 'nuf_{}_others'.format(self.name)]
 		elif self.fixed == "NO" and self.attribute_type == "RATIO":
-			return ['ruf_{}_min'.format(self.name),
-					'ruf_{}_max'.format(self.name),
-					'ruf_{}_integer'.format(self.name)]
+
+			if self.zone_or_global == "NACIONAL":
+				return [{
+					"zone": None,
+					"fields": [
+						'ruf_{}_global_min'.format(self.name),
+						'ruf_{}_global_max'.format(self.name),
+						'ruf_{}_global_integer'.format(self.name)
+						]
+					}]
+			else:
+				aux = []
+				for zone in self.category.bid.zones.all():
+					aux.append({
+					"zone": zone,
+					"fields": [
+						'ruf_{}_{}_min'.format(self.name, zone.name),
+						'ruf_{}_{}_max'.format(self.name, zone.name),
+						'ruf_{}_{}_integer'.format(self.name, zone.name)
+						]
+					})
+				return aux
 		else:
 			raise ValidationError()
 
+"""
+Atributos Fijos (CC los define)
+"""
 class FixedNominalValue(models.Model):
 	value = models.CharField(max_length = 64)
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
+	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
 	product = models.ForeignKey(
 		Product,
 	 	on_delete = models.CASCADE,
@@ -271,6 +344,7 @@ class FixedNominalValue(models.Model):
 class FixedRatioValue(models.Model):
 	value = models.FloatField()
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
+	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
 	product = models.ForeignKey(
 		Product,
 		on_delete = models.CASCADE,
@@ -279,9 +353,13 @@ class FixedRatioValue(models.Model):
 	def __str__(self):
 		return str(self.value)
 
+"""
+Atributos Variables (El proveedor los completa)
+"""
 class NominalConfig(models.Model):
 	accept_others = models.BooleanField()
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
+	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
 	product = models.ForeignKey(
 		Product,
 		on_delete = models.CASCADE,
@@ -290,6 +368,25 @@ class NominalConfig(models.Model):
 
 	def get_values_str(self):
 		return "; ".join([str(x) for x in self.nominal_values.all()]).strip()
+
+class RatioConfig(models.Model):
+	minval = models.FloatField()
+	maxval = models.FloatField()
+	integer = models.BooleanField()
+	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
+	product = models.ForeignKey(Product,
+								on_delete = models.CASCADE,
+								related_name = 'ratio_configs')
+	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
+	def __str__(self):
+		unit = self.attribute.unit
+		return "{}-{}({})".format(self.minval,self.maxval,unit)
+
+	def save(self, *args, **kwargs):
+		if self.minval >= self.maxval:
+			raise ValidationError("El valor mínimo debe ser mayor al valor máximo")
+		super(RatioConfig,self).save(*args, **kwargs)
+
 
 class NominalValue(models.Model):
 	value = models.CharField(max_length = 64)
@@ -303,20 +400,3 @@ class NominalValue(models.Model):
 	def save(self, *args, **kwargs):
 		self.value = self.value.upper()
 		super(NominalValue,self).save(*args, **kwargs)
-
-class RatioConfig(models.Model):
-	minval = models.FloatField()
-	maxval = models.FloatField()
-	integer = models.BooleanField()
-	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
-	product = models.ForeignKey(Product,
-								on_delete = models.CASCADE,
-								related_name = 'ratio_configs')
-	def __str__(self):
-		unit = self.attribute.unit
-		return "{}-{}({})".format(self.minval,self.maxval,unit)
-
-	def save(self, *args, **kwargs):
-		if self.minval >= self.maxval:
-			raise ValidationError("El valor mínimo debe ser mayor al valor máximo")
-		super(RatioConfig,self).save(*args, **kwargs)

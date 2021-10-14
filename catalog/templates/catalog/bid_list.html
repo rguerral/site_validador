@@ -1,23 +1,34 @@
-{% extends "base_bootstrap_nonavbar.html" %}
+{% extends "base_bootstrap.html" %}
 {% block content %}
-<h1>Convenios</h1>
-<p>
+<br>
+<h1>CONVENIOS</h1>
+
 {% if bid_list %}
-<ul>
-    {% for bid in bid_list %}
-			<li>
-	        <a href="{% url 'catalog:categories' bid.id %}">{{ bid }}</a>
-	        (<a href="{% url 'catalog:bid_update' bid.id %}">Edit</a> |
-	        <a href="{% url 'catalog:bid_delete' bid.id %}">Delete</a>)
-	    	</li>
-	{% endfor %}
-</ul>
+
+	<table class="table table-striped">
+		<tbody>
+		    {% for bid in bid_list %}
+		    	<tr>
+		    		<td>
+		    			<h4><a href="{% url 'catalog:bid_detail' bid.id %}">{{ bid }}</a><h4>
+		    		</td>
+		    		<td>
+		    			<h4>
+				        	<a href="{% url 'catalog:bid_update' bid.id %}"><i class="fa fa-pencil-alt"></i></a>
+				        	&nbsp;
+				        	<a href="{% url 'catalog:bid_delete' bid.id %}"><i class="fa fa-trash"></i></a>
+				        </h4>
+			    	</td>
+			    </tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
 {% else %}
-  <p>Aún no hay Convenios.</p>
+  <p><em>Aún no hay Convenios.</em></p>
 {% endif %}
-</p>
+
 <p>
-<a href="{% url 'catalog:bid_create' %}">Agregar Convenio</a> |
+<a href="{% url 'catalog:bid_create' %}"><i class="fa fa-plus"></i> Agregar Convenio</a>
 </p>
 {% endblock %}

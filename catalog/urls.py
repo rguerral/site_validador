@@ -20,6 +20,14 @@ urlpatterns = [
         views.BidDelete.as_view(),
          name='bid_delete'),
 
+    path('bid/<int:pk>',
+        views.BidDetail.as_view(),
+        name='bid_detail'),
+
+    path('bid/<int:pk>/attributes',
+        views.BidAttributeList.as_view(),
+        name='bidattribute_list'),
+
     path('bid/<int:pk>/create_bidattribute',
         views.BidAttributeCreate.as_view(),
         name='bidattribute_create'),
@@ -32,9 +40,21 @@ urlpatterns = [
         views.BidAttributeDelete.as_view(),
         name='bidattribute_delete'),
 
-    path('bid/<int:pk>',
-        views.BidDetail.as_view(),
-        name='categories'),
+    path('bidattribute/<int:pk>',
+        views.BidAttributeDetail.as_view(),
+        name='bidattribute_detail'),
+
+    path('bidattribute/<int:pk>/create_level',
+        views.BidAttributeLevelCreate.as_view(),
+        name='bidattributelevel_create'),
+
+    path('bidattributelevel/delete/<int:pk>',
+        views.BidAttributeLevelDelete.as_view(),
+        name='bidattributelevel_delete'),
+
+    path('bid/<int:pk>/categories',
+        views.CategoryList.as_view(),
+        name='category_list'),
 
     path('category/<int:pk>',
         views.CategoryDetail.as_view(),
@@ -68,11 +88,15 @@ urlpatterns = [
         views.ProductCreate.as_view(),
          name='product_create'),
 
+    # path('product/<int:pk>/update', 
+    #     views.ProductUpdate.as_view(),
+    #      name='product_update'),
+
     path('product/<int:pk>/delete', 
         views.ProductDelete.as_view(),
          name='product_delete'),
 
-    path('algorithms/<int:pk>', 
+    path('bid/<int:pk>/algorithms', 
         views.Algorithms.as_view(),
         name='algorithms'),
 
@@ -87,4 +111,9 @@ urlpatterns = [
     path('bid/<int:pk>/template', 
         views.BuildTemplate,
         name='bid_template'),
+
+    path('bid/<int:pk>/validate', 
+    views.Validate.as_view(),
+    name='validate'),
+
 ]

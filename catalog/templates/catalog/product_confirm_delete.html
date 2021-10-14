@@ -1,27 +1,20 @@
 {% extends "base_bootstrap.html" %}
 
-{% block navbar %} 
-	<nav class="navbar navbar-default navbar-inverse">
-	  <div class="container-fluid">
-	    <div class="navbar-header">
-	        <a class="navbar-brand" href="{% url 'catalog:categories' product.category.bid.id%}">Catálogo</a>
-	    </div>
-	    <ul class="nav navbar-nav">
-	        <li>
-	       <a class="navbar-brand" href="{% url 'catalog:algorithms' product.category.bid.id %}">Algoritmos</a>
-	    </li>
-	    </ul>
-	  </div>
-	</nav>
-{% endblock %}
-
 {% block content %}
-<h1>Eliminar producto</h1>
+<br>
 
-<p>Estas seguro?</p>
+<h4>
+	<a href="{% url 'catalog:category_detail' product.category.id %}">
+		<i class="fa fa-chevron-circle-left"></i> 
+		Volver
+	</a>
+</h4>
 
+<h1> Eliminar Producto </h1>
+
+<p>¿Quieres eliminar el producto: {{ product }}?</p>
 <form action="" method="POST">
   {% csrf_token %}
-  <input type="submit" value="Yes, delete.">
+  <input type="submit" value="Si, eliminar.">
 </form>
 {% endblock %}
