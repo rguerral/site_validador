@@ -9,6 +9,13 @@ def run():
 				"to_base": 1,
 				"synonyms": [],
 				"currency": True
+			},
+			"DOLAR":{
+				"abbreviation": "DOLAR",
+				"is_base": True,
+				"to_base": 1,
+				"synonyms": [],
+				"currency": True
 			}
 		},
 		"TAMAÑO DATO":{
@@ -16,6 +23,27 @@ def run():
 				"abbreviation": "GB",
 				"is_base": True,
 				"to_base": 1,
+				"synoyms": [],
+				"currency": False
+			},
+			"TERABYTE":{
+				"abbreviation": "TB",
+				"is_base": False,
+				"to_base": 1000,
+				"synoyms": [],
+				"currency": False
+			},
+			"MEGABYTE":{
+				"abbreviation": "MB",
+				"is_base": False,
+				"to_base": 0.001,
+				"synoyms": [],
+				"currency": False
+			},
+			"KILOBYTE":{
+				"abbreviation": "KB",
+				"is_base": False,
+				"to_base": 1e-6,
 				"synoyms": [],
 				"currency": False
 			}
@@ -28,13 +56,35 @@ def run():
 				"synonyms": [],
 				"currency": False
 			},
+			"KILOMETRO":{
+				"abbreviation": "KM",
+				"is_base": False,
+				"to_base": 1000,
+				"synonyms": [],
+				"currency": False
+
+			},
 			"CENTIMETRO":{
 				"abbreviation": "CM",
 				"is_base": False,
 				"to_base": 0.01,
 				"synonyms": [],
 				"currency": False
-			}
+			},
+			"MILIMETRO":{
+				"abbreviation": "MM",
+				"is_base": False,
+				"to_base": 0.001,
+				"synonyms": [],
+				"currency": False
+			},
+			"PULGADA":{
+				"abbreviation": '"',
+				"is_base": False,
+				"to_base": 0.0254,
+				"synonyms": [],
+				"currency": False
+			}				
 		},
 		"MASA":{
 			"GRAMO":{
@@ -46,6 +96,36 @@ def run():
 			},
 			"KILOGRAMO":{
 				"abbreviation": "KG",
+				"is_base": False,
+				"to_base": 1000,
+				"synonyms": [],
+				"currency": False
+			},
+			"MILIGRAMO":{
+				"abbreviation": "MG",
+				"is_base": False,
+				"to_base": 0.001,
+				"synonyms": [],
+				"currency": False
+			}
+		},
+		"VOLUMEN":{
+			"LITRO":{
+				"abbreviation": "L",
+				"is_base": True,
+				"to_base": 1,
+				"synonyms": [],
+				"currency": False
+			},
+			"MILILITRO":{
+				"abbreviation": "ML",
+				"is_base": False,
+				"to_base": 0.001,
+				"synonyms": [],
+				"currency": False
+			},
+			"METRO CÚBICO":{
+				"abbreviation": "M3",
 				"is_base": False,
 				"to_base": 1000,
 				"synonyms": [],

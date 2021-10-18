@@ -18,16 +18,24 @@
 
     {{ form.non_field_errors }}
 
-    {% for field in form.visible_fields %}
-    	{% if field != form.unit and field != form.attribute_type%}
-		    <div class="fieldWrapper">
-		        {{ field.errors }}
-		        {{ field.label_tag }}
-		        {{ field }}
-		    </div>
-		{% endif %}
-	{% endfor %}
+	<div class="fieldWrapper" id="name">
+		{{ form.name.label_tag }}
+		{{ form.name }}
+		{{ form.name.errors }}
+	</div>
 
+	<div class="fieldWrapper" id="zone_or_global">
+		{{ form.zone_or_global.label_tag }}
+		{{ form.zone_or_global }}
+		{{ form.zone_or_global.errors }}
+	</div>
+
+	<div class="fieldWrapper" id="fixed">
+		{{ form.fixed.label_tag }}
+		{{ form.fixed }}
+		{{ form.fixed.errors }}
+	</div>
+	
 	<div class="fieldWrapper" id="attribute_type">
 		{{ form.attribute_type.label_tag }}
 		{{ form.attribute_type }}
@@ -40,6 +48,18 @@
 		{{ form.unit.errors }}
 	</div>
 
+	<div class="fieldWrapper" id="accept_others" style="display:none">
+		{{ form.accept_others.label_tag }}
+		{{ form.accept_others }}
+		{{ form.accept_others.errors }}
+	</div>
+
+	<div class="fieldWrapper" id="only_integers" style="display:none">
+		{{ form.only_integers.label_tag }}
+		{{ form.only_integers }}
+		{{ form.only_integers.errors }}
+	</div>
+
     <input type="submit" value="Guardar">
     <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
   </form>
@@ -48,7 +68,7 @@
 
 <script type="text/javascript">
 	
-	function get_attribute_type(){
+	function toggle_unit(){
 		field = document.getElementById('id_attribute_type');
 		option = field.options[field.selectedIndex];
 		x = option.value;
@@ -59,7 +79,49 @@
 			document.getElementById('unit').style.display = 'none';
 		}
 	}
-	get_attribute_type()
-	document.getElementById('id_attribute_type').addEventListener('change', get_attribute_type);
+
+	function toggle_accept_others(){
+		field_fixed = document.getElementById('id_fixed');
+		fixed = field_fixed.options[field_fixed.selectedIndex];
+		field_attribute_type = document.getElementById('id_attribute_type');
+		attribute_type = field_attribute_type.options[field_attribute_type.selectedIndex];
+		if(attribute_type.value == "NOMINAL" & fixed.value == "NO"){
+			document.getElementById('accept_others').style.display = '';
+		}
+		else{
+			document.getElementById('accept_others').style.display = 'none';
+		}
+	}
+
+	function toggle_only_integers(){
+		field_fixed = document.getElementById('id_fixed');
+		fixed = field_fixed.options[field_fixed.selectedIndex];
+		field_attribute_type = document.getElementById('id_attribute_type');
+		attribute_type = field_attribute_type.options[field_attribute_type.selectedIndex];
+		if(attribute_type.value == "RATIO" & fixed.value == "NO"){
+			document.getElementById('only_integers').style.display = '';
+		}
+		else{
+			document.getElementById('only_integers').style.display = 'none';
+		}
+	}
+
+	function listen_attribute_type(){
+		toggle_unit()
+		toggle_accept_others()
+		toggle_only_integers()
+	}
+
+	function listen_fixed(){
+		toggle_accept_others()
+		toggle_only_integers()
+	}
+
+	toggle_unit()
+	toggle_accept_others()
+	toggle_only_integers()
+
+	document.getElementById('id_attribute_type').addEventListener('change', listen_attribute_type);
+	document.getElementById('id_fixed').addEventListener('change', listen_fixed);
 </script>
 {% endblock %}

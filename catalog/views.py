@@ -28,14 +28,10 @@ class BidCreate(FormView):
 		zones = form.cleaned_data.get('zones')
 		max_category_level = form.cleaned_data.get('max_category_level')
 		max_products_alternatives = form.cleaned_data.get('max_products_alternatives')
-		min_products_category_level = form.cleaned_data.get('min_products_category_level')
-		min_products_n = form.cleaned_data.get('min_products_n')
 		bid = Bid(
 			name = name,
 			max_category_level = max_category_level,
-			max_products_alternatives = max_products_alternatives,
-			min_products_category_level = min_products_category_level,
-			min_products_n = min_products_n)
+			max_products_alternatives = max_products_alternatives)
 		bid.save()
 		category = Category(name = "ROOT", parent = None, bid = bid, level = 0)
 		category.save()
@@ -382,7 +378,7 @@ class CategoryDetail(DetailView):
 						product = product,
 						attribute = attribute)
 					zone_data.append(
-						{"value": obj.get_values_str(), "others": obj.accept_others}
+						{"value": obj.get_values_str()}
 					)
 				else:
 					for zone in zones:
@@ -391,7 +387,7 @@ class CategoryDetail(DetailView):
 							attribute = attribute,
 							zone = zone)
 						zone_data.append(
-							{"value": obj.get_values_str(), "others": obj.accept_others}
+							{"value": obj.get_values_str()}
 						)
 				attributes_data.append(zone_data)
 			# Ratio unfix
@@ -402,7 +398,7 @@ class CategoryDetail(DetailView):
 						product = product,
 						attribute = attribute)
 					zone_data.append(
-						{"value": str(obj.minval) + " - " + str(obj.maxval), "integer":obj.integer}
+						{"value": str(obj.minval) + " - " + str(obj.maxval)}
 					)
 				else:
 					for zone in zones:
@@ -411,7 +407,7 @@ class CategoryDetail(DetailView):
 							attribute = attribute,
 							zone = zone)
 						zone_data.append(
-							{"value": str(obj.minval) + " - " + str(obj.maxval), "integer":obj.integer}
+							{"value": str(obj.minval) + " - " + str(obj.maxval)}
 						)
 				attributes_data.append(zone_data)
 			table_data.append({"product": product, "attributes_data": attributes_data})
@@ -633,11 +629,9 @@ class ProductCreate(FormView):
 			if att.zone_or_global == "NACIONAL":
 				values = form.cleaned_data.get('nuf_{}_global_values'.format(att.name))
 				values = [x.strip("\r") for x in values.split("\n")]
-				others = form.cleaned_data.get('nuf_{}_global_others'.format(att.name))
 				nominal_config = NominalConfig(
 					attribute = att,
 					product = product,
-					accept_others = others,
 					zone = None)
 				to_save.append(nominal_config)
 				for value in values:
@@ -649,11 +643,9 @@ class ProductCreate(FormView):
 				for zone in kwargs["zones"]:
 					values = form.cleaned_data.get('nuf_{}_{}_values'.format(att.name, zone))
 					values = [x.strip("\r") for x in values.split("\n")]
-					others = form.cleaned_data.get('nuf_{}_{}_others'.format(att.name, zone))
 					nominal_config = NominalConfig(
 						attribute = att,
 						product = product,
-						accept_others = others,
 						zone = zone)
 					to_save.append(nominal_config)
 					for value in values:
@@ -667,26 +659,22 @@ class ProductCreate(FormView):
 			if att.zone_or_global == "NACIONAL":
 				minval = form.cleaned_data.get('ruf_{}_global_min'.format(att.name))
 				maxval = form.cleaned_data.get('ruf_{}_global_max'.format(att.name))
-				integer = form.cleaned_data.get('ruf_{}_global_integer'.format(att.name))
 				ratio_config = RatioConfig(
 					attribute = att,
 					product = product,
 					minval = minval,
 					maxval = maxval,
-					integer = integer,
 					zone = None)
 				to_save.append(ratio_config)
 			else:
 				for zone in kwargs["zones"]:
 					minval = form.cleaned_data.get('ruf_{}_{}_min'.format(att.name, zone))
 					maxval = form.cleaned_data.get('ruf_{}_{}_max'.format(att.name, zone))
-					integer = form.cleaned_data.get('ruf_{}_{}_integer'.format(att.name, zone))
 					ratio_config = RatioConfig(
 						attribute = att,
 						product = product,
 						minval = minval,
 						maxval = maxval,
-						integer = integer,
 						zone = zone)
 					to_save.append(ratio_config)
 		# Guardar
@@ -777,7 +765,6 @@ class Validate(FormView):
 				)
 		response['Content-Disposition'] = 'attachment; filename=%s' % filename
 		return response
-
 
 def BuildJson(request, *args, **kwargs):
 	bid = get_object_or_404(Bid, pk=kwargs['pk'])

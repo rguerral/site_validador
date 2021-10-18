@@ -10,15 +10,6 @@ class BidForm(forms.Form):
 	max_category_level = forms.IntegerField(min_value = 1, max_value = 4)
 	zones = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 20}))
 	max_products_alternatives = forms.IntegerField(min_value = 1)
-	min_products_category_level = forms.ChoiceField(
-		choices = [
-			[1, "Categoria Nivel 1"],
-			[2, "Categoria Nivel 2"],
-			[3, "Categoria Nivel 3"],
-			[4, "Categoria Nivel 4"]
-		]
-		)
-	min_products_n = forms.IntegerField()
 
 	def clean_name(self):
 		cleaned_data = self.cleaned_data
@@ -40,19 +31,6 @@ class BidForm(forms.Form):
 			)
 		return zones
 
-	def clean_min_products_category_level(self):
-		cleaned_data = self.cleaned_data
-		min_products_category_level = cleaned_data.get("min_products_category_level")
-		return int(min_products_category_level)
-
-	def clean(self):
-		cleaned_data = super().clean()
-		min_products_category_level = cleaned_data.get("min_products_category_level")
-		max_category_level = cleaned_data.get("max_category_level")
-		if min_products_category_level > max_category_level:
-			raise ValidationError(
-					"No se cumple min_products_category_level <= max_category_level"
-				)
 
 class BidAttributeForm(forms.Form):
 	def __init__(self, *args, **kwargs):
@@ -66,7 +44,6 @@ class BidAttributeForm(forms.Form):
 			]
 			)
 		self.fields["unit"] = forms.ModelChoiceField(queryset=Unit.objects.filter(dimension = Dimension.objects.get(name = "MONEDA")))
-		
 	def clean(self):
 		cleaned_data = super().clean()
 		zone_or_global = cleaned_data.get("zone_or_global")
@@ -156,7 +133,7 @@ class AttributeForm(forms.ModelForm):
 
 	class Meta:
 		model = Attribute
-		fields = ['name', 'attribute_type', 'zone_or_global', 'fixed', 'unit']
+		fields = ['name', 'attribute_type', 'zone_or_global', 'fixed', 'unit', 'accept_others', "only_integers"]
 	
 	def clean_name(self):
 		# Reemplazar _
@@ -164,14 +141,52 @@ class AttributeForm(forms.ModelForm):
 		name = cleaned_data.get("name")
 		return name.replace("_", " ")
 
+	def clean_unit(self):
+		cleaned_data = self.cleaned_data
+		attribute_type = cleaned_data.get("attribute_type")
+		unit = cleaned_data.get("unit")
+		if attribute_type == "NOMINAL":
+			return None
+		else:
+			return unit
+
+	def clean_accept_others(self):
+		cleaned_data = self.cleaned_data
+		attribute_type = cleaned_data.get("attribute_type")
+		accept_others = cleaned_data.get("accept_others")
+		if attribute_type == "RATIO":
+			return None
+		else:
+			return accept_others
+
+	def clean_only_integers(self):
+		cleaned_data = self.cleaned_data
+		attribute_type = cleaned_data.get("attribute_type")
+		only_integers = cleaned_data.get("only_integers")
+		if attribute_type == "NOMINAL":
+			return None
+		else:
+			return only_integers
+
 	def clean(self):
 		cleaned_data = super().clean()
 		attribute_type = cleaned_data.get("attribute_type")
 		unit = cleaned_data.get("unit")
+		fixed = cleaned_data.get("fixed")
 		# Atributo ratio sin unit
 		if attribute_type == "RATIO" and not unit:
 			raise ValidationError(
-					"Los atributos ratio deben tener una unidad"
+					"Debe definir el campo unit"
+				)
+		# Only_integers
+		if attribute_type == "RATIO" and fixed==True:
+			raise ValidationError(
+					"Debe definir el campo only_integers"
+				)
+		# accept_others
+		if attribute_type == "NOMINAL" and fixed==True:
+			raise ValidationError(
+					"Debe definir el campo accept_others"
 				)
 		# Atributo ya existe
 		name = cleaned_data.get("name").upper()

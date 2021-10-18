@@ -14,16 +14,6 @@ class Bid(models.Model):
             MaxValueValidator(20),
             MinValueValidator(1)
         ])
-	min_products_category_level = models.IntegerField(
-		validators=[
-            MaxValueValidator(4),
-            MinValueValidator(1)
-        ])
-	min_products_n = models.IntegerField(
-		validators=[
-            MaxValueValidator(20),
-            MinValueValidator(0)
-        ])
 
 	def __str__(self):
 		return self.name
@@ -226,6 +216,18 @@ class Attribute(models.Model):
 	zone_or_global = models.CharField(max_length = 8,
 									choices = [("ZONA", "ZONA"),
 												("NACIONAL", "NACIONAL")])
+
+	CHOICES = (
+	    (None, "-------"),
+	    (True, "SI"),
+	    (False, "NO")
+	)
+	# only_integers: atributo para los type RATIO. Si es True, restringe los valores a enteros
+	only_integers = models.BooleanField(null = True, blank = True, choices = CHOICES)
+	# accept_others: atributo para los type NOMINAL. Si es True, permite al proveedor ingresar nuevos valores
+	accept_others = models.BooleanField(null = True, blank = True, choices = CHOICES)
+
+
 	class Meta:
 		unique_together = [['name', 'category']]
 
@@ -322,9 +324,6 @@ class Attribute(models.Model):
 		else:
 			raise ValidationError()
 
-"""
-Atributos Fijos (CC los define)
-"""
 class FixedNominalValue(models.Model):
 	value = models.CharField(max_length = 64)
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
@@ -353,11 +352,7 @@ class FixedRatioValue(models.Model):
 	def __str__(self):
 		return str(self.value)
 
-"""
-Atributos Variables (El proveedor los completa)
-"""
 class NominalConfig(models.Model):
-	accept_others = models.BooleanField()
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
 	zone = models.ForeignKey(Zone, on_delete = models.CASCADE, blank = True, null = True)
 	product = models.ForeignKey(
@@ -372,7 +367,7 @@ class NominalConfig(models.Model):
 class RatioConfig(models.Model):
 	minval = models.FloatField()
 	maxval = models.FloatField()
-	integer = models.BooleanField()
+	
 	attribute = models.ForeignKey(Attribute, on_delete = models.CASCADE)
 	product = models.ForeignKey(Product,
 								on_delete = models.CASCADE,

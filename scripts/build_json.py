@@ -93,7 +93,7 @@ def build_json(bid):
 							product = product,
 							zone = zone_query)
 						aux = {}
-						if nominal_config.accept_others:
+						if attribute.accept_others==True:
 							aux["type"] = "list_others"
 						else:
 							aux["type"]= "list"
@@ -105,7 +105,7 @@ def build_json(bid):
 							product = product,
 							zone = zone_query)
 						aux = {}
-						if ratio_config.integer:
+						if attribute.only_integers==True:
 							aux["type"] = "integer"
 						else:
 							aux["type"] = "float"
@@ -120,8 +120,6 @@ def build_json(bid):
 	# Conditions
 	json_conditions = {}
 	json_conditions["max_products_alternatives"] = bid.max_products_alternatives
-	json_conditions["min_products_category_level"] = bid.min_products_category_level
-	json_conditions["min_products_n"] = bid.min_products_n
 
 	full_json = {
 		"zones" : json_zones,

@@ -36,6 +36,8 @@
 					<td> NOMBRE </td>
 					<td> TIPO </td>
 					<td> FIJO </td>
+					<td> ACEPTA OTROS </td>
+					<td> SOLO ENTEROS </td>
 					<td> </td>
 				</tr>
 			</thead>
@@ -45,6 +47,24 @@
 						<td>{{attribute}}</td> 
 						<td>{{attribute.attribute_type}}</td>
 						<td>{{attribute.fixed}}</td>
+						{% if attribute.accept_others %}
+							{% if attribute.accept_others == true %}
+								<td>SI</td>
+							{% else %}
+								<td>NO</td>
+							{% endif %}
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						{% if attribute.only_integers %}
+							{% if attribute.only_integers == true %}
+								<td>SI</td>
+							{% else %}
+								<td>NO</td>
+							{% endif %}
+						{% else %}
+							<td> - </td>
+						{% endif %}						
 						<td><a href="{% url 'catalog:attribute_update' attribute.id %}"><i class="fa fa-pencil-alt"></i></a>
 						&nbsp;
 						<a href="{% url 'catalog:attribute_delete' attribute.id %}"><i class="fa fa-trash"></i></a></td>
@@ -96,33 +116,13 @@
 					<tr>
 						<td> {{obj.product.name}} </td> 
 						{% for att in obj.attributes_data %}
-							{% for att_zone in att %}		
+							{% for att_zone in att %}
 								<td>
 								{{att_zone.value | truncatechars:20}}
-								{% if att_zone.others %}
-									<br>
-									Otros?  
-									{% if att_zone.others == True %}
-										<i class="fa fa-thumbs-up"></i>
-									{% else %}
-										<i class="fa fa-thumbs-down"></i>
-									{% endif %}
-								{% endif %}
-								{% if att_zone.integer %}
-								<br>
-									Decimales?
-									{% if att_zone.integer == True %}
-										<i class="fa fa-thumbs-down"></i> 
-									{% else %}
-										<i class="fa fa-thumbs-up"></i>
-									{% endif %}
-								{% endif %}
 								</td>
 							{% endfor %}
 						{% endfor %}
 						<td colspan = {{zones|length}}>
-							<a href="#"><i class="fa fa-pencil-alt"></i></a>
-							&nbsp;
 							<a href="{% url 'catalog:product_delete' obj.product.id %}"><i class="fa fa-trash"></i></a>
 						</td>
 					</tr>
