@@ -1,12 +1,23 @@
 {% extends "base_bootstrap.html" %}
 
 {% block content %}
-<h1>Eliminar atributo</h1>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:category_list' attribute.category.bid.id%}"> <i class="fa fa-chevron-circle-left"></i></a>
+		Eliminar atributo
+	</h1>
 
-<p>¿Quieres eliminar el atributo {{ attribute }}?</p>
+	<div class=note>
+		Nota: eliminar un atributo NO elimina los productos creados
+	</div>
+</div>
+
+¿Quieres eliminar el atributo {{ attribute }}?
 
 <form action="" method="POST">
   {% csrf_token %}
-  <input type="submit" value="Si, borrar.">
+  <input type="submit" value="Confirmar">
+  <input type="submit" value="Cancelar" onclick="window.location.href='{{% url 'catalog:category_list' attribute.category.bid.id%}';return false;">
 </form>
+
 {% endblock %}

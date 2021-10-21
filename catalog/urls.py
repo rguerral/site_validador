@@ -3,6 +3,10 @@ from . import views
 
 app_name='catalog'
 urlpatterns = [
+    
+    path('',
+        views.Welcome.as_view(),
+        name='index'),
 
     path('bids',
         views.BidList.as_view(),
@@ -61,11 +65,11 @@ urlpatterns = [
         name='category_detail'),
     
     path('bid/<int:pk>/create_category', 
-        views.CategoryCreate.as_view(success_url=reverse_lazy('catalog:categories')),
+        views.CategoryCreate.as_view(),
          name='category_create'),
     
     path('category/<int:pk>/update', 
-        views.CategoryUpdate.as_view(success_url=reverse_lazy('catalog:categories')),
+        views.CategoryUpdate.as_view(),
          name='category_update'),
     
     path('category/<int:pk>/delete', 

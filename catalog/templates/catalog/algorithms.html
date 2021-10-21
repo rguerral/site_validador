@@ -2,38 +2,32 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
-	<br>
+<div class=header>
 	<h1>
-		<a href="{% url 'catalog:bid_detail' bid.id %}"> {{bid}}</a>
+		<a href="{% url 'catalog:bid_detail' bid.id %}"> <i class="fa fa-chevron-circle-left"></i></a>
+		Algoritmos
 	</h1>
+	<div class="note"> {{bid.name}}</div>
+</div>
+
+<ul>
+<li> 
 	<h4>
-		<a href="{% url 'catalog:bid_detail' bid.id %}">
-			<i class="fa fa-chevron-circle-left"></i> 
-			Volver
-		</a>
+		<a href="{% url 'catalog:build_json' bid.id %}"> Descargar JSON </a>
 	</h4>
-
-	<h2>Algoritmos</h2>
-
-	<ul>
-	<li> 
-		<h4>
-			<a href="{% url 'catalog:build_json' bid.id %}"> Descargar JSON </a>
-		</h4>
-	<li> 
-		<h4>
-			<a href="{% url 'catalog:bid_template' bid.id %}"> Descargar planilla excel </a>
-		</h4>
-	</li>
-	<li>
-		<h4>
-			<a href="{% url 'catalog:simulate' bid.id %}"> Simular ofertas </a>
-		</h4>
-	</li>
-	<li>
-		<h4> 
-			<a href="{% url 'catalog:validate' bid.id %}"> Validar Ofertas </a>
-		</h4></li>
-	</ul>
+<li> 
+	<h4>
+		<a href="{% url 'catalog:bid_template' bid.id %}"> Descargar planilla excel </a>
+	</h4>
+</li>
+<li>
+	<h4>
+		<a href="{% url 'catalog:simulate' bid.id %}"> Simular ofertas </a>
+	</h4>
+</li>
+<li>
+	<h4> 
+		<a href="{% url 'catalog:validate' bid.id %}"> Validar Ofertas </a>
+	</h4></li>
+</ul>
 {% endblock %}

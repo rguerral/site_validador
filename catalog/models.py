@@ -128,13 +128,12 @@ class Category(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.name = self.name.upper().strip()
-		parent = self.parent
 		self.update_position()
 		self.update_tree_name()
 		super(Category,self).save(*args, **kwargs)
 
 	def update_tree_name(self):
-		tab = "---"
+		tab = "–––––"
 		if self.level == 0:
 			self.tree_name = "ROOT"
 		else:

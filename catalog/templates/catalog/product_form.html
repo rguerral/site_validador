@@ -2,137 +2,122 @@
 {% load crispy_forms_tags %}
 {% load catalog_extras %}
 
-
 {% block content %}
 
+<div class=header>
+    <h1>
+        <a href="{% url 'catalog:category_detail' category.id%}"> <i class="fa fa-chevron-circle-left"></i></a>
+        {% if product %}
+            Editar producto
+        {% else %}
+            Agregar producto
+        {% endif %}
+    </h1>
+
+    <div class=note>
+        Nota: Los productos no pueden ser editados posterior a su creación
+    </div>
+</div>
+
+<form action="" method="post">
+{% csrf_token %}
+
+{{ form.non_field_errors }}
+{{ form.name.label_tag }}
+{{ form.name }}
+{{ form.name.errors }}
+
+{% if attributes.nom_fix or attributes.rat_fix %}
+    <br><br>
+    <h3> Atributos Fijos </h3>
+    {% if attributes.nom_fix %}
+        <h4>Nominales</h4>
+        {% for att in attributes.nom_fix %}
+        	<strong>{{att.full_str}}</strong>
+            <br>
+            {% for field_set in att.get_form_fields %}
+                {% if field_set.zone %}
+                    <em>{{field_set.zone}}</em>
+                    <br>
+                {% endif %}  
+                {% for form_field in field_set.fields %}
+                    {% for x in form|get_obj_attr:form_field %}
+                        {{x}}
+                    {% endfor %}
+                {% endfor %}
+            <br>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    {% if attributes.rat_fix %}
+        <h4> Ratios</h4>
+        {% for att in attributes.rat_fix %}
+        	<strong>{{att.full_str}}</strong>
+            <br>
+            {% for field_set in att.get_form_fields %}
+                {% if field_set.zone %}
+                    <em>{{field_set.zone}}</em>
+                    <br>
+                {% endif %}  
+                {% for form_field in field_set.fields %}
+                    {% for x in form|get_obj_attr:form_field %}
+                        {{x}}
+                    {% endfor %}
+                {% endfor %}
+            <br>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endif %}
+
 <br>
-<h4>
-    <a href="{% url 'catalog:category_detail' category.id%}">
-        <i class="fa fa-chevron-circle-left"></i> 
-        Volver
-    </a>
-</h4>
-
-<h1> Agregar / actualizar Producto </h1>
-<p>
-  <form action="" method="post">
-    {% csrf_token %}
-
-    {{ form.non_field_errors }}
-    <center>
-        {{ form.name.label_tag }}
-        {{ form.name }}
-        {{ form.name.errors }}
-    </center>
-
-    {% if attributes.nom_fix or attributes.rat_fix %}
-        <center><h3> Atributos Fijos </h3></center>
-        <div class = "row">
-        {% if attributes.nom_fix %}
-            <div class = "column">
-                    <h4>Nominales</h4>
-                    {% for att in attributes.nom_fix %}
-                    	<strong>{{att.full_str}}</strong>
+{% if attributes.nom_unfix or attributes.rat_unfix %}
+    <h3> Atributos Variables </h3>
+    {% if attributes.nom_unfix %}
+        <h4>Nominales</h4>
+            {% for att in attributes.nom_unfix %}
+            	<strong>{{att.full_str}}</strong>
+                <br>
+            	{% for field_set in att.get_form_fields %}
+                    {% if field_set.zone %}
+                        <em>{{field_set.zone}}</em>
                         <br>
-                        {% for field_set in att.get_form_fields %}
-                            {% if field_set.zone %}
-                                <em>{{field_set.zone}}</em>
-                                <br>
-                            {% endif %}  
-                            {% for form_field in field_set.fields %}
-                                {% for x in form|get_obj_attr:form_field %}
-                                    {{x}}
-                                {% endfor %}
-                            {% endfor %}
-                        <br>
-                        {% endfor %}
+                    {% endif %}  
+                    {% for form_field in field_set.fields %}
+                		{% for x in form|get_obj_attr:form_field %}
+                			{{x}}
+                		{% endfor %}
                     {% endfor %}
-            </div>
-            {% endif %}
+                <br>
+            	{% endfor %}
+            {% endfor %}  
+        {% endif %}
 
-            {% if attributes.rat_fix %}
-                <div class = "column">
-                    <h4> Ratios</h4>
-                    {% for att in attributes.rat_fix %}
-                    	<strong>{{att.full_str}}</strong>
-                        <br>
-                        {% for field_set in att.get_form_fields %}
-                            {% if field_set.zone %}
-                                <em>{{field_set.zone}}</em>
-                                <br>
-                            {% endif %}  
-                            {% for form_field in field_set.fields %}
-                                {% for x in form|get_obj_attr:form_field %}
-                                    {{x}}
-                                {% endfor %}
-                                <br>
-                            {% endfor %}
-                        <br>
-                        {% endfor %}
+    {% if attributes.rat_unfix %}  
+        <h4>Ratios</h4>  
+        {% for att in attributes.rat_unfix %}
+        	<strong>{{att.full_str}}</strong>
+            <br>
+            {% for field_set in att.get_form_fields %}
+                {% if field_set.zone %}
+                    <em>{{field_set.zone}}</em>
+                    <br>
+                {% endif %}  
+                {% for form_field in field_set.fields %}
+                    {% for x in form|get_obj_attr:form_field %}
+                        {{x}}
                     {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+                {% endfor %}
+            <br>
+            {% endfor %}
+        {% endfor %}
     {% endif %}
+{% endif %}
 
-    {% if attributes.nom_unfix or attributes.rat_unfix %}
-        <center><h3> Atributos Variables </h3></center>
-        <div class = "row">
-            {% if attributes.nom_unfix %}
-                <div class = "column">
-                    <h4>Nominales</h4>
-                        {% for att in attributes.nom_unfix %}
-                        	<strong>{{att.full_str}}</strong>
-                            <br>
-                        	{% for field_set in att.get_form_fields %}
-                                {% if field_set.zone %}
-                                    <em>{{field_set.zone}}</em>
-                                    <br>
-                                {% endif %}  
-                                {% for form_field in field_set.fields %}
-                            		{% for x in form|get_obj_attr:form_field %}
-                            			{{x}}
-                            		{% endfor %}
-                                    <br>
-                                {% endfor %}
-                            <br>
-                        	{% endfor %}
-                        {% endfor %}  
-                </div>
-            {% endif %}
-
-            {% if attributes.rat_unfix %}
-                <div class = "column">   
-                    <h4>Ratios</h4>  
-                        {% for att in attributes.rat_unfix %}
-                        	<strong>{{att.full_str}}</strong>
-                            <br>
-                            {% for field_set in att.get_form_fields %}
-                                {% if field_set.zone %}
-                                    <em>{{field_set.zone}}</em>
-                                    <br>
-                                {% endif %}  
-                                {% for form_field in field_set.fields %}
-                                    {% for x in form|get_obj_attr:form_field %}
-                                        {{x}}
-                                    {% endfor %}
-                                    <br>
-                                {% endfor %}
-                            <br>
-                            {% endfor %}
-                        {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    {% endif %}
-
-    <br>
-    <center>
-	<input type="submit" value="Submit">
-    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
-    </center>
-  </form>
-</p>
+<br>
+<input type="submit" value="Aceptar">
+<input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
+</form>
 
 
 {% endblock %}

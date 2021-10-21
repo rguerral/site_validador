@@ -1,44 +1,43 @@
 {% extends "base_bootstrap.html" %}
 
 {% block content %}
-<br>
-<h4>
-	<a href="{% url 'catalog:category_list' bid.id%}">
-		<i class="fa fa-chevron-circle-left"></i> 
-		Volver
-	</a>
-</h4>
-<h3>
-	{% for node in branch %}
-		{% if node.level != bid.max_category_level %}
-			{{node}}
-			>
-		{% else %}
-			<a href="{% url 'catalog:category_detail' node.id %}">{{node}}</a> 
-			>
-		{% endif %}
-	{% endfor %}
-</h3>
 
-<h1>
-	{{ category.name }}
-	<a href="{% url 'catalog:category_update' category.id %}"><i class="fa fa-pencil-alt"></i></a>
-	<a href="{% url 'catalog:category_delete' category.id %}"><i class="fa fa-trash"></i></a>
-</h1>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:category_list' category.bid.id%}"> <i class="fa fa-chevron-circle-left"></i></a>
+		{{category}}
+	</h1>
 
-<br>
-<div class="container">
-	<h4>Atributos</h4>
+	<div class=note>
+		<i class="fa fa-tree"></i> >
+		{% for node in branch %}
+			{% if node.level != bid.max_category_level %}
+				{{node}}
+				>
+			{% else %}
+				<a href="{% url 'catalog:category_detail' node.id %}">{{node}}</a> 
+				>
+			{% endif %}
+		{% endfor %}
+
+		{{category}}
+	</div>
+</div>
+
+<div>
+	<h2>Atributos</h2>
 	{% if attributes %}
-		<table class="table table-striped">
+		<table class="table table-hover">
 			<thead>
 				<tr>
-					<td> NOMBRE </td>
-					<td> TIPO </td>
-					<td> FIJO </td>
-					<td> ACEPTA OTROS </td>
-					<td> SOLO ENTEROS </td>
-					<td> </td>
+					<td> Nombre </td>
+					<td style="width:200px"> Tipo </td>
+					<td style="width:100px"> Fijo </td>
+					<td style="width:150px"> Nivel </td>
+					<td style="width:250px"> Acepta otros? <br><em>(Nominal)</em></td>
+					<td style="width:250px"> Solo valores enteros <br><em>(Ratio)</em></td>
+					<td style="width:100px"> Editar </td>
+					<td style="width:100px"> Borrar </td>
 				</tr>
 			</thead>
 			<tbody>
@@ -47,27 +46,32 @@
 						<td>{{attribute}}</td> 
 						<td>{{attribute.attribute_type}}</td>
 						<td>{{attribute.fixed}}</td>
-						{% if attribute.accept_others %}
-							{% if attribute.accept_others == true %}
-								<td>SI</td>
+						<td>{{attribute.zone_or_global}}</td>
+						<td>
+							{% if attribute.accept_others == True %}
+								SI
+							{% elif attribute.accept_others == False%}
+								NO
 							{% else %}
-								<td>NO</td>
+								-
 							{% endif %}
-						{% else %}
-							<td> - </td>
-						{% endif %}
-						{% if attribute.only_integers %}
-							{% if attribute.only_integers == true %}
-								<td>SI</td>
+						</td>
+						<td>
+							{% if attribute.only_integers == True %}
+								SI
+							{% elif attribute.only_integers == False %}
+								NO
 							{% else %}
-								<td>NO</td>
+								-
 							{% endif %}
-						{% else %}
-							<td> - </td>
-						{% endif %}						
-						<td><a href="{% url 'catalog:attribute_update' attribute.id %}"><i class="fa fa-pencil-alt"></i></a>
-						&nbsp;
-						<a href="{% url 'catalog:attribute_delete' attribute.id %}"><i class="fa fa-trash"></i></a></td>
+
+						</td>						
+						<td>
+							<a href="{% url 'catalog:attribute_update' attribute.id %}"><i class="fa fa-pencil-alt"></i></a>
+						</td>
+						<td>
+							<a href="{% url 'catalog:attribute_delete' attribute.id %}"><i class="fa fa-trash"></i></a>
+						</td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -80,12 +84,13 @@
 	</p>
 </div>
 
-<br>
-
-<div class="container">
-	<h4>Productos</h4>
+<div>
+	<h2>Productos</h2>
+	<div class=note>
+        Nota: Los productos no pueden ser editados posterior a su creación. Para cambiarlos se deber borrar y crear uno nuevo.
+    </div>
 	{% if table_data %}
-		<table class="table table-bordered">
+		<table class="table table-hover">
 			<thead>
 				<tr>
 					<td rowspan = 2> MODELO </td>
@@ -96,7 +101,7 @@
 							<td colspan= {{zones|length}}> {{attribute.full_str}}</td>
 						{% endif %}
 					{% endfor %}
-					<td rowspan = 2> </td>
+					<td rowspan = 2> Borrar </td>
 				</tr>
 				<tr>
 					{% for attribute in attributes %}

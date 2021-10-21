@@ -2,34 +2,31 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-	<br>
 
-	<h4>
-		<a href="{% url 'catalog:category_list' bid.id %}">
-			<i class="fa fa-chevron-circle-left"></i> 
-			Volver
-		</a>
-	</h4>
-
+<div class=header>
 	<h1>
-		Agregar Categoría
+		<a href="{% url 'catalog:category_list' bid.id %}"> <i class="fa fa-chevron-circle-left"></i></a>
+		{% if category %}
+			Editar categoría
+		{% else %}
+			Agregar categoría
+		{% endif %}
 	</h1>
+</div>
 
-	<p>
-	  <form action="" method="post">
-	    {% csrf_token %}
-    	{{ form.non_field_errors }}
+<form action="" method="post">
 
-    	<div class="fieldWrapper" id="name">
-			{{ form.name.label_tag }}
-			{{ form.name }}
-			{{ form.name.errors }}
-		</div>
+	{% csrf_token %}
+	{{ form.non_field_errors }}
 
+	<div class="fieldWrapper" id="name">
+		Nombre:
+		{{ form.name }}
+		{{ form.name.errors }}
+	</div>
 
-	    <input type="submit" value="Agregar">
-	    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_list' bid.id %}';return false;">
-	  </form>
-	</p>
+	<input type="submit" value="Aceptar">
+	<input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_list' bid.id %}';return false;">
+</form>
 
 {% endblock %}

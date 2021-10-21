@@ -3,22 +3,18 @@
 
 
 {% block content %}
-<br>
-<h4>
-    <a href="{% url 'catalog:algorithms' bid.id%}">
-        <i class="fa fa-chevron-circle-left"></i> 
-        Volver
-    </a>
-</h4>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:algorithms' bid.id%}"> <i class="fa fa-chevron-circle-left"></i></a>
+		Simular ofertas
+	</h1>
+</div>
 
-<h1>
-	Simular ofertas
-</h1>
 <ul>
-<li> <strong>NSIMS:</strong> numero de ofertas a simular</li>
-<li> <strong>P_FIELD_ERROR:</strong> probabilidad [0,1] de cometer error al llenar un campo</li>
-<li> <strong>P_EMPTY:</strong> probabilidad [0,1] de dejar un campo que debe llenar vacio</li>
-<li> <strong>P_EDIT_FIELD:</strong> probabilidad [0,1] de modificar al menos una celda que no debe ser modificada (celdas grises)</li>
+	<li> <strong>NSIMS:</strong> numero de ofertas a simular</li>
+	<li> <strong>P_FIELD_ERROR:</strong> probabilidad [0,1] de cometer error al llenar un campo</li>
+	<li> <strong>P_EMPTY:</strong> probabilidad [0,1] de dejar un campo que debe llenar vacio</li>
+	<li> <strong>P_EDIT_FIELD:</strong> probabilidad [0,1] de modificar al menos una celda que no debe ser modificada (celdas grises)</li>
 </ul>
 <p>
 <form action="" method="post">
@@ -31,6 +27,6 @@
 	    </div>
 	{% endfor %}
 	<input type="submit" value="Descargar">
-    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:algorithms' bid.id %}';return false;">
+    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:algorithms' bid.id %}';return false;">
 </form>
 {% endblock %}

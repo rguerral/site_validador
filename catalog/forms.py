@@ -6,10 +6,10 @@ from .widgets import ClearableMultipleFilesInput
 from .fields import MultipleFilesField
 
 class BidForm(forms.Form):
-	name = forms.CharField()
-	max_category_level = forms.IntegerField(min_value = 1, max_value = 4)
-	zones = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 20}))
-	max_products_alternatives = forms.IntegerField(min_value = 1)
+	name = forms.CharField(label= "Nombre del convenio")
+	max_category_level = forms.IntegerField(min_value = 1, max_value = 4, label="Niveles de categoría")
+	zones = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 35}), label="Zonas", required = False)
+	max_products_alternatives = forms.IntegerField(min_value = 1, label="Número de alternativas de producto")
 
 	def clean_name(self):
 		cleaned_data = self.cleaned_data
@@ -25,25 +25,29 @@ class BidForm(forms.Form):
 		cleaned_data = self.cleaned_data
 		zones = cleaned_data.get("zones")
 		zones = [x.strip("\r") for x in zones.split("\n")]
+		if len(zones) == 1 and zones[0]=="":
+			return ["NACIONAL"]
 		if len(zones) != len(set(zones)):
 			raise ValidationError(
 				"Hay una zona duplicada"
 			)
 		return zones
 
-
 class BidAttributeForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.bid = kwargs.pop('bid')
 		super(BidAttributeForm, self).__init__(*args, **kwargs)
-		self.fields["name"] = forms.CharField()
+		self.fields["name"] = forms.CharField(label = "Nombre atributo")
 		self.fields["zone_or_global"] = forms.ChoiceField(
 			choices = [
 				["ZONA", "ZONA"],
 				["NACIONAL", "NACIONAL"],
-			]
+			],
+			label = "¿Se oferta a nivel nacional o por zona?"
 			)
-		self.fields["unit"] = forms.ModelChoiceField(queryset=Unit.objects.filter(dimension = Dimension.objects.get(name = "MONEDA")))
+		self.fields["unit"] = forms.ModelChoiceField(queryset=Unit.objects.filter(
+			dimension = Dimension.objects.get(name = "MONEDA")),
+			label = "Unidad")
 	def clean(self):
 		cleaned_data = super().clean()
 		zone_or_global = cleaned_data.get("zone_or_global")
@@ -105,7 +109,7 @@ class BidAttributeLevelForm(forms.Form):
 		return cleaned_data
 
 class CategoryForm(forms.Form):
-	name = forms.CharField()
+	name = forms.CharField(label = "Nombre")
 
 	def __init__(self, *args, **kwargs):
 		self.bid = kwargs.pop('bid')
@@ -134,7 +138,15 @@ class AttributeForm(forms.ModelForm):
 	class Meta:
 		model = Attribute
 		fields = ['name', 'attribute_type', 'zone_or_global', 'fixed', 'unit', 'accept_others', "only_integers"]
-	
+		labels = {
+        	"name": "Nombre atributo",
+        	"attribute_type": "Tipo de atributo",
+        	"zone_or_global": "Se oferta a nacional o por zona",
+        	"fixed": "¿Valor fijo?",
+        	"unit": "Unidad",
+        	"accept_others": "¿Acepta otros valores?",
+        	"only_integers": "¿Solo valores enteros?"
+    	}
 	def clean_name(self):
 		# Reemplazar _
 		cleaned_data = self.cleaned_data
@@ -279,15 +291,16 @@ class ProductForm(forms.Form):
 		return name.upper().strip()
 
 class SimulateForm(forms.Form):
-	nsims = forms.IntegerField(min_value = 1, max_value = 500)
-	p_field_error = forms.FloatField(min_value = 0, max_value = 1)
-	p_empty = forms.FloatField(min_value = 0, max_value = 1)
-	p_edit_field = forms.FloatField(min_value = 0, max_value = 1)
+	nsims = forms.IntegerField(min_value = 1, max_value = 500, label ="NSIMS")
+	p_field_error = forms.FloatField(min_value = 0, max_value = 1, label = "P_FIELD_ERROR")
+	p_empty = forms.FloatField(min_value = 0, max_value = 1, label = "P_EMPTY")
+	p_edit_field = forms.FloatField(min_value = 0, max_value = 1, label = "P_EDIT_FIELD")
 	
 class ValidateForm(forms.Form):
 	content = MultipleFilesField(
 		widget=ClearableMultipleFilesInput(
-			attrs={'multiple': True}))
+			attrs={'multiple': True}),
+		label = "Archivos")
 							
 	def clean(self):
 		cleaned_data = super().clean()

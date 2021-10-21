@@ -2,18 +2,19 @@
 
 {% block content %}
 
-<h4>
-	<a href="{% url 'catalog:bid_detail' category.bid.id %}">
-		<i class="fa fa-chevron-circle-left"></i> 
-		Volver
-	</a>
-</h4>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:category_list' category.bid.id %}"> <i class="fa fa-chevron-circle-left"></i></a>
+		Eliminar Categoría
+	</h1>
+</div>
 
-<h1>Eliminar Categoría</h1>
+¿Quieres eliminar la categoría: {{ category }}?
+<div class="note"> Nota: También se eliminaran sus categorías hijas </div>
 
-<p>¿Quieres eliminar la categoría: {{ category }}?</p>
 <form action="" method="POST">
   {% csrf_token %}
-  <input type="submit" value="Si, eliminar.">
+  <input type="submit" value="Confirmar">
+  <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_list' category.bid.id %}';return false;">
 </form>
 {% endblock %}

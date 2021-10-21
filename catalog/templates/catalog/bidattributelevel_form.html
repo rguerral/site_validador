@@ -1,78 +1,68 @@
-{% extends "base_bootstrap_nonavbar.html" %}
+{% extends "base_bootstrap.html" %}
 {% load crispy_forms_tags %}
 {% load catalog_extras %}
 {% block content %}
-<br>
 
-<h4>
-	<a href="{% url 'catalog:bidattribute_detail' bidattribute.id %}">
-		<i class="fa fa-chevron-circle-left"></i> 
-		Volver
-	</a>
-</h4>
-{% if bidattributelevel %}
-	<h2>
-		Modificar Nivel
-	</h2>
-{% else %}
-	<h2>
-		Agregar Nivel
-	</h2>
-{% endif %}
-<p>
-	  <form action="" method="post">
-	    {% csrf_token %}
-    	{{ form.non_field_errors }}
-
-    	<div class="fieldWrapper" id="name">
-			{{ form.name.label_tag }}
-			{{ form.name }}
-			{{ form.name.errors }}
-		</div>
-
-		{% if bidattribute.zone_or_global == "NACIONAL" %}
-			<h5> Restricciones precio </h5>
-			<strong> Nivel Nacional </strong>
-			<div class="fieldWrapper" id="global_fields">
-				<div class="fieldWrapper" id="global_minprice">
-					{{ form.global_minprice.label_tag }}
-					{{ form.global_minprice }}
-					{{ form.global_minprice.errors }}
-					({{bidattribute.unit.abbreviation}})
-				</div>
-				<div class="fieldWrapper" id="global_maxprice">
-					{{ form.global_maxprice.label_tag }}
-					{{ form.global_maxprice }}
-					{{ form.global_maxprice.errors }}
-					({{bidattribute.unit.abbreviation}})
-				</div>
-			</div>
+<div class=header>
+    <h1>
+        <a href="{% url 'catalog:bidattribute_detail' bidattribute.id %}"> <i class="fa fa-chevron-circle-left"></i></a>
+		{% if bidattributelevel %}
+			Editar nivel
 		{% else %}
-			<div class="fieldWrapper" id="zone_fields">
-				<h5> Restricciones precio </h5>
-				{% for x in form_auxdata %}
-					<strong> {{x.name}} </strong>
-					<br>
-					{% for y in form|get_obj_attr:x.min_price_field %}
-	        			{{y}} 
-	        		{% endfor %}
-	        		({{bidattribute.unit.abbreviation}})
-	        		<br>
-					{% for y in form|get_obj_attr:x.max_price_field %}
-	        			{{y}}
-	        		
-	        		{% endfor %}
-	        		({{bidattribute.unit.abbreviation}})
-					<br>
-				{% endfor %}
-			</div>
+			Agregar nivel
 		{% endif %}
+    </h1>
+    <div class="note"> {{bidattribute.bid}} > {{bidattribute.name}}</div>
+</div>
+<form action="" method="post">
+{% csrf_token %}
+{{ form.non_field_errors }}
 
+<div class="fieldWrapper" id="name">
+	{{ form.name.label_tag }}
+	{{ form.name }}
+	{{ form.name.errors }}
+</div>
 
-	    <input type="submit" value="Agregar">
-	    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:bidattribute_list' bidattribute.bid.id %}';return false;">
-	  </form>
-</p>
-
+{% if bidattribute.zone_or_global == "NACIONAL" %}
+	<h4> Restricciones precio </h4>
+	<strong> Nivel Nacional </strong>
+	<div class="fieldWrapper" id="global_fields">
+		<div class="fieldWrapper" id="global_minprice">
+			{{ form.global_minprice.label_tag }}
+			{{ form.global_minprice }}
+			{{ form.global_minprice.errors }}
+			({{bidattribute.unit.abbreviation}})
+		</div>
+		<div class="fieldWrapper" id="global_maxprice">
+			{{ form.global_maxprice.label_tag }}
+			{{ form.global_maxprice }}
+			{{ form.global_maxprice.errors }}
+			({{bidattribute.unit.abbreviation}})
+		</div>
+	</div>
+{% else %}
+	<div class="fieldWrapper" id="zone_fields">
+		<h4> Restricciones precio </h4>
+		{% for x in form_auxdata %}
+			<strong> {{x.name}} </strong>
+			<br>
+			{% for y in form|get_obj_attr:x.min_price_field %}
+    			{{y}} 
+    		{% endfor %}
+    		({{bidattribute.unit.abbreviation}})
+    		<br>
+			{% for y in form|get_obj_attr:x.max_price_field %}
+    			{{y}}
+    		
+    		{% endfor %}
+    		({{bidattribute.unit.abbreviation}})
+			<br>
+		{% endfor %}
+	</div>
+{% endif %}
+<input type="submit" value="Aceptar">
+<input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:bidattribute_detail' bidattribute.id %}';return false;">
+</form>
 
 {% endblock %}

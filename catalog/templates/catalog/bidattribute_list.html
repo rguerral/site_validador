@@ -1,56 +1,49 @@
 {% extends "base_bootstrap.html" %}
 
 {% block content %}
-
-	<br>
-
+<div class=header>
 	<h1>
-		<a href="{% url 'catalog:bid_detail' bid.id %}"> {{bid}}</a>
-	</h1>
-
-	<h4>
 		<a href="{% url 'catalog:bid_detail' bid.id %}">
-			<i class="fa fa-chevron-circle-left"></i> 
-			Volver
-		</a>
-	</h4>
+		<i class="fa fa-chevron-circle-left"></i> </a>
+		Atributos convenio
+	</h1>
+	<div class="note"> {{bid}} </div>
+</div>
+{% if bidattribute_list %}
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<td> Nombre </td>
+				<td> Nacional / zonas </td>
+				<td> Editar </td>
+				<td> Borrar </td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for obj in bidattribute_list %}
+				<tr>
+					<td>
+						<h4>
+						<a href="{% url 'catalog:bidattribute_detail' obj.bidattribute.id %}"> {{obj.bidattribute.name}} </a>
+						</h4>
+					</td>
+					<td>
+						{{obj.bidattribute.zone_or_global}} 
+					</td>
 
-	<h2> Atributos convenio </h2>
-	<p>
-		{% if bidattribute_list %}
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<td> NOMBRE </td>
-						<td> NACIONAL / ZONAS </td>
-						<td> </td>
-					</tr>
-				</thead>
-				<tbody>
-					{% for obj in bidattribute_list %}
-						<tr>
-							<td>
-								<h4>
-								<a href="{% url 'catalog:bidattribute_detail' obj.bidattribute.id %}"> {{obj.bidattribute.name}} </a>
-								</h4>
-							</td>
-							<td> {{obj.bidattribute.zone_or_global}} </td>
+					<td>
+						<a href="{% url 'catalog:bidattribute_update' obj.bidattribute.id %}"><i class="fa fa-pencil-alt"></i></a>
+					</td>
+					<td>
+						<a href="{% url 'catalog:bidattribute_delete' obj.bidattribute.id %}"><i class="fa fa-trash"></i></a> 
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-							<td>
-								<a href="{% url 'catalog:bidattribute_update' obj.bidattribute.id %}"><i class="fa fa-pencil-alt"></i></a>
-								&nbsp;
-								<a href="{% url 'catalog:bidattribute_delete' obj.bidattribute.id %}"><i class="fa fa-trash"></i></a> 
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-
-		{% else %}
-			Aún no hay atributos para este convenio
-		{% endif %}
-	<p>
-		<a href="{% url 'catalog:bidattribute_create' bid.id %}"><i class="fa fa-plus"></i> Agregar Atributo</a>
-	</p>
-	</p>
+{% else %}
+	Aún no hay atributos para este convenio
+{% endif %}
+<a href="{% url 'catalog:bidattribute_create' bid.id %}"><i class="fa fa-plus"></i> Agregar Atributo</a>
 {% endblock %}

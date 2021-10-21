@@ -1,0 +1,28 @@
+body{
+	margin: 0;
+	padding-top: 100px;
+	padding-right: 100px;
+	padding-bottom: 100px;
+	padding-left: 100px;
+	font-family:'Quicksand', sans-serif;
+	font-size: 20px;
+}
+
+.header{
+	border: 0px solid black;
+	padding-bottom: 20px;
+}
+
+.note{
+	font-size:18px;
+	font-style: italic;
+	color: gray;
+	padding-bottom: 20px;
+
+}
+
+ul.no-space{
+  padding: 0;
+  margin: 0;
+  line-height:25px;
+}

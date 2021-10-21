@@ -1,34 +1,47 @@
 {% extends "base_bootstrap.html" %}
+
 {% block content %}
-<br>
-<h1>CONVENIOS</h1>
+
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:index'%}"> <i class="fa fa-chevron-circle-left"></i></a>
+		Convenios Marco
+	</h1>
+	<div class =note> Selecciona el convenio que quieres trabajar o crea uno nuevo.</div>
+</div>
 
 {% if bid_list %}
+	<table class="table table-hover" style="width: 750px;">
+		<thead>
+			<tr>
+				<td> Nombre convenio </td>
+				<td> Editar </td>
+				<td> Borrar </td>
+			</tr>
+		</thead>
 
-	<table class="table table-striped">
 		<tbody>
 		    {% for bid in bid_list %}
 		    	<tr>
-		    		<td>
+		    		<td style="width: 80%">
 		    			<h4><a href="{% url 'catalog:bid_detail' bid.id %}">{{ bid }}</a><h4>
 		    		</td>
 		    		<td>
-		    			<h4>
-				        	<a href="{% url 'catalog:bid_update' bid.id %}"><i class="fa fa-pencil-alt"></i></a>
-				        	&nbsp;
-				        	<a href="{% url 'catalog:bid_delete' bid.id %}"><i class="fa fa-trash"></i></a>
-				        </h4>
+		    			<h4><a href="{% url 'catalog:bid_update' bid.id %}"><i class="fa fa-pencil-alt"></i></a></h4>
+				    <td>
+				      <h4><a href="{% url 'catalog:bid_delete' bid.id %}"><i class="fa fa-trash"></i></a></h4>
 			    	</td>
 			    </tr>
 			{% endfor %}
 		</tbody>
 	</table>
-
 {% else %}
-  <p><em>Aún no hay Convenios.</em></p>
+  <em>No existe ningún convenio marco.</em>
 {% endif %}
 
-<p>
-<a href="{% url 'catalog:bid_create' %}"><i class="fa fa-plus"></i> Agregar Convenio</a>
-</p>
+<div style="width: 80%">
+	<a href="{% url 'catalog:bid_create' %}"><i class="fa fa-plus"></i> Crear nuevo convenio</a>
+</div>
+
+
 {% endblock %}

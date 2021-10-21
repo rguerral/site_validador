@@ -13,6 +13,8 @@ from django.http import HttpResponseRedirect, Http404
 import django_tables2 as tables
 from django.http import JsonResponse, HttpResponse
 
+class Welcome(TemplateView):
+    template_name = "catalog/welcome.html"
 
 class BidList(ListView):
 	model = Bid
@@ -53,6 +55,13 @@ class BidDelete(DeleteView):
 class BidDetail(DetailView):
 	model = Bid
 	template_name = "catalog/bid_detail.html"
+	def get(self, request, pk):
+		bid = get_object_or_404(Bid, pk=pk)
+		zones = bid.zones.all()
+		context = {'bid': bid,
+					'zones': zones,
+					}
+		return render(request, self.template_name, context)
 
 class BidAttributeList(ListView):
 	model = BidAttribute
@@ -106,7 +115,6 @@ class BidAttributeCreate(FormView):
 			).save()
 		return super(BidAttributeCreate, self).form_valid(form)
 
-# No updatea si se cambia zona/nacional
 class BidAttributeUpdate(FormView):
 	form_class = BidAttributeForm
 	template_name = "catalog/bidattribute_form.html"
@@ -291,9 +299,6 @@ class CategoryList(ListView):
 		bid = get_object_or_404(Bid, pk=pk)
 		category_list = Category.objects.filter(bid = bid, level__gt = 0)
 		root_category = Category.objects.get(bid = bid, level = 0)
-		for category in category_list:
-			category.update_tree_name()
-			category.save()
 		category_list = category_list.order_by('position')
 		context = {"category_list": category_list,
 					"root_category": root_category,
@@ -440,7 +445,6 @@ class CategoryCreate(FormView):
 
 	def form_valid(self, form):
 		parent = get_object_or_404(Category, pk=self.kwargs['pk'])
-		print(parent)
 		bid = parent.bid
 		name = form.cleaned_data.get('name')
 		level = parent.level +1
@@ -460,6 +464,15 @@ class CategoryUpdate(UpdateView):
 	model = Category
 	fields = ['name', 'parent']
 
+	def get_context_data(self, **kwargs):
+		context = super(CategoryUpdate, self).get_context_data()
+		context['bid'] = context["category"].bid
+		return context
+
+	def get_success_url(self, **kwargs):
+		bid = self.get_context_data()['bid']
+		return reverse('catalog:category_list', kwargs={'pk':bid.id})
+
 class CategoryDelete(DeleteView):
 	model = Category
 
@@ -474,7 +487,8 @@ class CategoryDelete(DeleteView):
 			if len(categories) == 0:
 				break
 			for category in categories:
-				category.update_position()
+				print(category)
+				category.save()
 			level += 1
 		return response
 
@@ -525,6 +539,11 @@ class AttributeUpdate(UpdateView):
 	def get_success_url(self, **kwargs):
 		attribute = get_object_or_404(Attribute, pk=self.kwargs['pk'])
 		return reverse('catalog:category_detail', kwargs={'pk':attribute.category.id})
+
+	def form_valid(self, form):
+		category = get_object_or_404(Attribute, pk=self.kwargs['pk']).category
+		category.products.all().delete()
+		return super(AttributeUpdate, self).form_valid(form)
 
 class AttributeDelete(DeleteView):
 	model = Attribute

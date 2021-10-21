@@ -1,21 +1,17 @@
 {% extends "base_bootstrap.html" %}
 {% load crispy_forms_tags %}
 
-
 {% block content %}
-<br>
-<h4>
-    <a href="{% url 'catalog:algorithms' bid.id%}">
-        <i class="fa fa-chevron-circle-left"></i> 
-        Volver
-    </a>
-</h4>
 
-<h1>
-	Validar Ofertas
-</h1>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:algorithms' bid.id%}">
+		<i class="fa fa-chevron-circle-left"></i> </a>
+		Validar ofertas
+	</h1>
+	<div class = "note"> Carga las planillas excels de las ofertas y obten la planilla consolidada y validada </div>
+</div>
 
-<p>
 <form action="" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
     {{ form.non_field_errors }}
@@ -27,6 +23,6 @@
 	 </div>
 
 	<input type="submit" value="Validar">
-    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'catalog:algorithms' bid.id %}';return false;">
+    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:algorithms' bid.id %}';return false;">
 </form>
 {% endblock %}

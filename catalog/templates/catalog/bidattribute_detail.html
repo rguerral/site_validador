@@ -1,73 +1,65 @@
 {% extends "base_bootstrap.html" %}
 
 {% block content %}
-	<br>
+
+<div class=header>
 	<h1>
-		<a href="{% url 'catalog:bid_detail' bidattribute.bid.id %}">
-			{{bidattribute.bid}}
-		</a>
-	</h1>
-	<h4>
 		<a href="{% url 'catalog:bidattribute_list' bidattribute.bid.id %}">
-			<i class="fa fa-chevron-circle-left"></i> 
-			Volver
-		</a>
-	</h4>
-
-	<h2>
+		<i class="fa fa-chevron-circle-left"></i> </a>
 		{{bidattribute.name}}
-	</h2>
-
-	{% if table_content %}
-		<table class="table table-striped">
-			<thead>
+	</h1>
+	<div class="note"> {{bidattribute.bid}} </div>
+</div>
+{% if table_content %}
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td> Nivel </td>
+				<td> Zona </td>
+				<td> Precio minimo ({{bidattribute.unit.abbreviation}})</td>
+				<td> Precio máximo ({{bidattribute.unit.abbreviation}}) </td>
+				<td> Editar </td>
+				<td> Borrar </td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for k, v in table_content.items %}
 				<tr>
-					<td> NIVEL </td>
-					<td> ZONA </td>
-					<td> PRECIO MINIMO ({{bidattribute.unit.abbreviation}})</td>
-					<td> PRECIO MAXIMO ({{bidattribute.unit.abbreviation}}) </td>
-					<td> </td>
+					<td>
+						{{v.0.bidattributelevel.name}}
+
+					</td>
+					<td> 
+						{% for obj in v %} 
+							{{obj.zone}}
+							<br> 
+						{% endfor %}
+					</td>
+					<td> 
+						{% for obj in v %} 
+							{{obj.bidattributelevel.minprice}}
+							<br>
+						{% endfor %}
+					</td>
+					<td> 
+						{% for obj in v %} 
+							{{obj.bidattributelevel.maxprice}}
+							<br>
+						{% endfor %}
+					</td>
+					<td>
+						<a href="#"><i class="fa fa-pencil-alt"></i></a>
+					</td>
+					<td>
+						<a href="{% url 'catalog:bidattributelevel_delete' v.0.bidattributelevel.id %}"><i class="fa fa-trash"></i></a> 
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-				{% for k, v in table_content.items %}
-					<tr>
-						<td>
-							{{v.0.bidattributelevel.name}}
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<em> No existen niveles </em>
+{% endif %}
+<a href="{% url 'catalog:bidattributelevel_create' bidattribute.id %}"><i class="fa fa-plus"></i> Agregar Nivel </a>
 
-						</td>
-						<td> 
-							{% for obj in v %} 
-								{{obj.zone}}
-								<br> 
-							{% endfor %}
-						</td>
-						<td> 
-							{% for obj in v %} 
-								{{obj.bidattributelevel.minprice}}
-								<br>
-							{% endfor %}
-						</td>
-						<td> 
-							{% for obj in v %} 
-								{{obj.bidattributelevel.maxprice}}
-								<br>
-							{% endfor %}
-						</td>
-						<td>
-							<a href="#"><i class="fa fa-pencil-alt"></i></a>
-							&nbsp;
-							<a href="{% url 'catalog:bidattributelevel_delete' v.0.bidattributelevel.id %}"><i class="fa fa-trash"></i></a> 
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	{% else %}
-		<p>
-			<em> No existen niveles </em>
-		</p>
-	{% endif %}
-
-	<a href="{% url 'catalog:bidattributelevel_create' bidattribute.id %}"><i class="fa fa-plus"></i> Agregar Nivel </a>
 {% endblock %}

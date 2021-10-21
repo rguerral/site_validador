@@ -1,0 +1,17 @@
+{% extends "base_bootstrap.html" %}
+{% block content %}
+<div class=header>
+	<h1>
+		Validador
+	</h1>
+</div>
+<div style="width: 900px;">
+Bienvenid@ a la plataforma de creación de catálogos y validación de ofertas desarrollado por el equipo FONDEF de la Universidad de Chile.
+<br><br>
+La plataforma se encuentra en estado Beta, por lo que puede presentar errores. Si detectas alguno porfavor escríbeme a rodrigo@crux.uno detallando la falla.
+<br><br>
+<input style="width:900px;" type="submit" value="Entrar" onclick="window.location.href='{% url 'catalog:bids'%}';return false;">
+
+</div>
+
+{% endblock %}

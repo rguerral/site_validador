@@ -2,49 +2,43 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<br>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:bidattribute_list' bid.id %}">
+		<i class="fa fa-chevron-circle-left"></i> </a>
+		{% if bidattribute %}
+			Editar atributo de convenio
+		{% else %}
+			Agregar atributo de convenio
+		{% endif %}
+	</h1>
+	<div class="note"> {{bid}} </div>
+</div>
 
-<h4>
-	<a href="{% url 'catalog:bidattribute_list' bid.id %}">
-		<i class="fa fa-chevron-circle-left"></i> 
-		Volver
-	</a>
-</h4>
-{% if bidattribute %}
-	<h2>Modificar atributo de convenio</h2>
-{% else %}
-	<h2>Agregar atributo de convenio</h2>
-{% endif %}
+  <form action="" method="post">
+    {% csrf_token %}
+	{{ form.non_field_errors }}
 
+	<div class="fieldWrapper" id="name">
+		{{ form.name.label_tag }}
+		{{ form.name }}
+		{{ form.name.errors }}
+	</div>
 
-<p>
-	  <form action="" method="post">
-	    {% csrf_token %}
-    	{{ form.non_field_errors }}
+	<div class="fieldWrapper" id="zone_or_global">
+		{{ form.zone_or_global.label_tag }}
+		{{ form.zone_or_global }}
+		{{ form.zone_or_global.errors }}
+	</div>
 
-    	<div class="fieldWrapper" id="name">
-			{{ form.name.label_tag }}
-			{{ form.name }}
-			{{ form.name.errors }}
-		</div>
-
-		<div class="fieldWrapper" id="zone_or_global">
-			{{ form.zone_or_global.label_tag }}
-			{{ form.zone_or_global }}
-			{{ form.zone_or_global.errors }}
-		</div>
-
-		<div class="fieldWrapper" id="unit">
-			{{ form.unit.label_tag }}
-			{{ form.unit }}
-			{{ form.unit.errors }}
-		</div>
+	<div class="fieldWrapper" id="unit">
+		{{ form.unit.label_tag }}
+		{{ form.unit }}
+		{{ form.unit.errors }}
+	</div>
 
 
-	    <input type="submit" value="Actualizar" >
-	    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:bidattribute_list' bid.id %}';return false;">
-	  </form>
-</p>
-
-
+    <input type="submit" value="Aceptar" >
+    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:bidattribute_list' bid.id %}';return false;">
+  </form>
 {% endblock %}

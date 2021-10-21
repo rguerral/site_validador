@@ -2,21 +2,23 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<br>
-<h4>
-	<a href="{% url 'catalog:category_detail' category.id%}">
-		<i class="fa fa-chevron-circle-left"></i> 
-		Volver
-	</a>
-</h4>
+<div class=header>
+	<h1>
+		<a href="{% url 'catalog:category_detail' category.id%}">
+		<i class="fa fa-chevron-circle-left"></i> </a>
+		{% if attribute %}
+			Editar atributo
+		{% else %}
+			Agregar atributo
+		{% endif %}
+	</h1>
+	<div class = "note"> Nota: al agregar o modificar un atributo se eliminarán los productos creados </div>
+</div>
 
-<h1> Agregar / actualizar Atributo </h1>
-<em> Nota: al agregar un atributo se eliminarán los productos creados </em>
-<p>
-  <form action="" method="post">
-    {% csrf_token %}
+<form action="" method="post">
+	{% csrf_token %}
 
-    {{ form.non_field_errors }}
+	{{ form.non_field_errors }}
 
 	<div class="fieldWrapper" id="name">
 		{{ form.name.label_tag }}
@@ -35,7 +37,7 @@
 		{{ form.fixed }}
 		{{ form.fixed.errors }}
 	</div>
-	
+
 	<div class="fieldWrapper" id="attribute_type">
 		{{ form.attribute_type.label_tag }}
 		{{ form.attribute_type }}
@@ -60,10 +62,10 @@
 		{{ form.only_integers.errors }}
 	</div>
 
-    <input type="submit" value="Guardar">
-    <input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
-  </form>
-</p>
+	<input type="submit" value="Aceptar">
+	<input type="submit" value="Cancelar" onclick="window.location.href='{% url 'catalog:category_detail' category.id %}';return false;">
+</form>
+
 
 
 <script type="text/javascript">
