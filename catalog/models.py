@@ -280,8 +280,7 @@ class Attribute(models.Model):
 				return [{
 						"zone": None,
 						"fields": [
-							'nuf_{}_global_values'.format(self.name),
-							'nuf_{}_global_others'.format(self.name)
+							'nuf_{}_global_values'.format(self.name)
 							]
 						}]
 			else:
@@ -291,7 +290,6 @@ class Attribute(models.Model):
 						"zone": zone,
 						"fields": [
 							'nuf_{}_{}_values'.format(self.name, zone.name),
-							'nuf_{}_{}_others'.format(self.name, zone.name)
 							]
 						})
 				return aux
@@ -304,8 +302,7 @@ class Attribute(models.Model):
 					"zone": None,
 					"fields": [
 						'ruf_{}_global_min'.format(self.name),
-						'ruf_{}_global_max'.format(self.name),
-						'ruf_{}_global_integer'.format(self.name)
+						'ruf_{}_global_max'.format(self.name)
 						]
 					}]
 			else:
@@ -316,8 +313,7 @@ class Attribute(models.Model):
 					"fields": [
 						'ruf_{}_{}_min'.format(self.name, zone.name),
 						'ruf_{}_{}_max'.format(self.name, zone.name),
-						'ruf_{}_{}_integer'.format(self.name, zone.name)
-						]
+						'ruf_{}_{}_integer'.format(self.name, zone.name)						]
 					})
 				return aux
 		else:

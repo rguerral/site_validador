@@ -43,7 +43,8 @@
 	</table>
 
 {% else %}
-	Aún no hay atributos para este convenio
+	<em> Aún no hay atributos para este convenio. </em>
 {% endif %}
+<br>
 <a href="{% url 'catalog:bidattribute_create' bid.id %}"><i class="fa fa-plus"></i> Agregar Atributo</a>
 {% endblock %}

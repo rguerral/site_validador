@@ -12,42 +12,46 @@
 
 <h2> Árbol de categorías </h2>
 <div class=note> Nota: Las categorías hojas (nivel {{bid.max_category_level}}) son configurables. </div>
-
-<table class="table table-hover" style="width: 900px;">
-	<thead>
-		<tr>
-			<td> Nombre </td>
-			<td> Agregar </td>
-			<td> Editar </td>
-			<td> Borrar </td>
-		</tr>
-	</thead>
-	<tbody>
-		{% for category in category_list %}
+{% if category_list %}
+	<table class="table table-hover" style="width: 900px;">
+		<thead>
 			<tr>
-				<td style="width: 80%">
-		        {% if category.level < category.bid.max_category_level %}
-		        	{{ category.tree_name}}
-				{% else %}
-					<a href="{% url 'catalog:category_detail' category.id %}">{{ category.tree_name }}</a>
-					&nbsp;
-				{% endif %}
-				</td>
-				<td>
-					{% if category.level < category.bid.max_category_level %}
-						<a href="{% url 'catalog:category_create' category.id %}"><i class="fa fa-plus"></i></a>
+				<td> Nombre </td>
+				<td> Agregar </td>
+				<td> Editar </td>
+				<td> Borrar </td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for category in category_list %}
+				<tr>
+					<td style="width: 80%">
+			        {% if category.level < category.bid.max_category_level %}
+			        	{{ category.tree_name}}
+					{% else %}
+						<a href="{% url 'catalog:category_detail' category.id %}">{{ category.tree_name }}</a>
+						&nbsp;
 					{% endif %}
-				</td>
-				<td>
-					<a href="{% url 'catalog:category_update' category.id %}"><i class="fa fa-pencil-alt"></i></a>
-				</td>
-				<td>
-					<a href="{% url 'catalog:category_delete' category.id %}"><i class="fa fa-trash"></i></a> 
-				</td>
-	    	</tr>
-		{% endfor %}
-	</tbody>
-</table>
+					</td>
+					<td>
+						{% if category.level < category.bid.max_category_level %}
+							<a href="{% url 'catalog:category_create' category.id %}"><i class="fa fa-plus"></i></a>
+						{% endif %}
+					</td>
+					<td>
+						<a href="{% url 'catalog:category_update' category.id %}"><i class="fa fa-pencil-alt"></i></a>
+					</td>
+					<td>
+						<a href="{% url 'catalog:category_delete' category.id %}"><i class="fa fa-trash"></i></a> 
+					</td>
+		    	</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<em> No existen categorías. </em>
+{% endif %}
+<br>
 <a href="{% url 'catalog:category_create' root_category.id %}"><i class="fa fa-plus"></i> 
 Agregar categoría nivel 1</a>
 {% endblock %}

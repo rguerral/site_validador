@@ -12,6 +12,7 @@ from scripts.validate_bids import validate_bids
 from django.http import HttpResponseRedirect, Http404
 import django_tables2 as tables
 from django.http import JsonResponse, HttpResponse
+import re
 
 class Welcome(TemplateView):
     template_name = "catalog/welcome.html"
@@ -299,7 +300,15 @@ class CategoryList(ListView):
 		bid = get_object_or_404(Bid, pk=pk)
 		category_list = Category.objects.filter(bid = bid, level__gt = 0)
 		root_category = Category.objects.get(bid = bid, level = 0)
-		category_list = category_list.order_by('position')
+		# Sort
+		def natural_sort(l): 
+		    convert = lambda text: int(text) if text.isdigit() else text.lower()
+		    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+		    return sorted(l, key=alphanum_key)
+		sort_position = natural_sort([category.position for category in category_list])
+		category_list = []
+		for position in sort_position:
+			category_list.append(Category.objects.get(bid=bid, position=position))
 		context = {"category_list": category_list,
 					"root_category": root_category,
 					"bid" : bid}

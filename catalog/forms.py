@@ -166,7 +166,8 @@ class AttributeForm(forms.ModelForm):
 		cleaned_data = self.cleaned_data
 		attribute_type = cleaned_data.get("attribute_type")
 		accept_others = cleaned_data.get("accept_others")
-		if attribute_type == "RATIO":
+		fixed = cleaned_data.get("fixed")
+		if attribute_type == "RATIO" or fixed==True:
 			return None
 		else:
 			return accept_others
@@ -175,7 +176,8 @@ class AttributeForm(forms.ModelForm):
 		cleaned_data = self.cleaned_data
 		attribute_type = cleaned_data.get("attribute_type")
 		only_integers = cleaned_data.get("only_integers")
-		if attribute_type == "NOMINAL":
+		fixed = cleaned_data.get("fixed")
+		if attribute_type == "NOMINAL" or fixed==True:
 			return None
 		else:
 			return only_integers
@@ -191,12 +193,12 @@ class AttributeForm(forms.ModelForm):
 					"Debe definir el campo unit"
 				)
 		# Only_integers
-		if attribute_type == "RATIO" and fixed==True:
+		if attribute_type == "RATIO" and fixed==False:
 			raise ValidationError(
 					"Debe definir el campo only_integers"
 				)
 		# accept_others
-		if attribute_type == "NOMINAL" and fixed==True:
+		if attribute_type == "NOMINAL" and fixed==False:
 			raise ValidationError(
 					"Debe definir el campo accept_others"
 				)
@@ -245,10 +247,6 @@ class ProductForm(forms.Form):
 					label = str("Valores"),
 					widget=forms.Textarea(attrs={'rows': 5,
 												 'cols': 25}))
-				self.fields['nuf_{}_global_others'.format(att)] = forms.BooleanField(
-					label = str("Acepta otros"),
-					initial = False,
-					required = False)
 
 			elif att.zone_or_global == "ZONA":
 				for zone in self.zones:
@@ -256,10 +254,6 @@ class ProductForm(forms.Form):
 						label = str("Valores"),
 						widget=forms.Textarea(attrs={'rows': 5,
 													 'cols': 25}))
-					self.fields['nuf_{}_{}_others'.format(att,zone)] = forms.BooleanField(
-						label = str("Acepta otros"),
-						initial = False,
-						required = False)
 
 		#RatUnfixed
 		for att in self.attributes["rat_unfix"]:
@@ -268,10 +262,6 @@ class ProductForm(forms.Form):
 					label = str("Valor minimo"))
 				self.fields['ruf_{}_global_max'.format(att)] = forms.FloatField(
 					label = str("Valor maximo"))
-				self.fields['ruf_{}_global_integer'.format(att)] = forms.BooleanField(
-					label = str("Solo numeros enteros"),
-					initial = False,
-					required = False)
 
 			elif att.zone_or_global == "ZONA":
 				for zone in self.zones:
@@ -279,10 +269,6 @@ class ProductForm(forms.Form):
 						label = str("Valor minimo"))
 					self.fields['ruf_{}_{}_max'.format(att,zone)] = forms.FloatField(
 						label = str("Valor maximo"))
-					self.fields['ruf_{}_{}_integer'.format(att,zone)] = forms.BooleanField(
-						label = str("Solo numeros enteros"),
-						initial = False,
-						required = False)
 
 	def clean_name(self):
 		# Reemplazar _
