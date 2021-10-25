@@ -11,7 +11,8 @@ La Figura 1 muestra una versión simplificada del modelo:
 * Las categorías tienen 0 o más atributos (Attribute), los cuales pueden ser de tipo nominal o ratio. Los atributos nominales toman valores discretos (p.ej. "Lenovo", "Intel Core i5") y los atributos ratio valores numericos seguidos de una unidad de medida (p.ej. "4 gigabytes", "$100,000 CLP").
 * Los productos (Products) pertenecen a una categoría y heredan sus atributos. Los atributos consolidan un valor en un producto (AttributeValue). Por ejemplo, el atributo "Marca" puede tomar el valor "Samsung" en un producto, o el atributo "Contenido" puede tomar el valor "1 kilogramos", etc.
 
-![Diagrama ER simple](/images/erd_simple.png)
+<img src="/images/erd_simple.png" width="250px">
+
 
 
 ## 3. Plataforma web
