@@ -8,7 +8,7 @@ La herramienta se construye a partir de un modelo de datos que permite estructur
 ### 2.1. Diagrama simplificado
 La siguiente figura muestra una versión simplificada del modelo:
 
-<img src="/images/erd_simple.png" width="250px">
+<center><img src="/images/erd_simple.png" width="250px"></center>
 
  * Un Convenio (Bid) tienen categorías (Category) y "atributos del convenio" (BidAttribute). Un ejemplo de atributo del convenio puede ser el transporte o la dificultad de armado del CM Mobiliario 2020.
 * Las categorías tienen 0 o más atributos (Attribute), los cuales pueden ser de tipo nominal o ratio. Los atributos nominales toman valores discretos (p.ej. "Lenovo", "Intel Core i5") y los atributos ratio valores numericos seguidos de una unidad de medida (p.ej. "4 gigabytes", "$100,000 CLP").
@@ -16,7 +16,7 @@ La siguiente figura muestra una versión simplificada del modelo:
 
 ### 2.2. Diagrama completo
 
-<img src="/images/erd.png" width="750px">
+<center><img src="/images/erd.png" width="750px"></center>
 
 
 
