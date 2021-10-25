@@ -6,12 +6,16 @@ La herramienta se construye con el objetivo de estructurar el proceso de creaci�
 La herramienta se construye a partir de un modelo de datos que permite estructurar toda la información necesaria para evaluar un CM, el cual es presentado en la sección 2. La herramienta cuenta con una plataforma web desarrollada en [Django](https://es.wikipedia.org/wiki/Django_(framework)) que permite a cualquier usuario (sin conocimiento en programación) interactuar con el modelo de datos. La plataforma además disponibiliza algoritmos que automatizan los procesos de *(i)* creación de la planilla de evaluación, *(ii)* simulación de ofertas y *(iii)* validación de ofertas. La plataforma es descrita en la sección 3: se presenta un manual de instalación y un manual de uso.
 
 ### 2.1. Diagrama simplificado
-La Figura 1 muestra una versión simplificada del modelo: 
+La siguiente figura muestra una versión simplificada del modelo: 
+<img src="/images/erd_simple.png" width="250px">
  * Un Convenio (Bid) tienen categorías (Category) y "atributos del convenio" (BidAttribute). Un ejemplo de atributo del convenio puede ser el transporte o la dificultad de armado del CM Mobiliario 2020.
 * Las categorías tienen 0 o más atributos (Attribute), los cuales pueden ser de tipo nominal o ratio. Los atributos nominales toman valores discretos (p.ej. "Lenovo", "Intel Core i5") y los atributos ratio valores numericos seguidos de una unidad de medida (p.ej. "4 gigabytes", "$100,000 CLP").
 * Los productos (Products) pertenecen a una categoría y heredan sus atributos. Los atributos consolidan un valor en un producto (AttributeValue). Por ejemplo, el atributo "Marca" puede tomar el valor "Samsung" en un producto, o el atributo "Contenido" puede tomar el valor "1 kilogramos", etc.
 
-<img src="/images/erd_simple.png" width="250px">
+### 2.2. Diagrama completo
+<img src="/images/erd.png" width="250px">
+
+
 
 
 
