@@ -28,7 +28,7 @@ def build_json(bid):
 	max_level = bid.max_category_level
 	lvl1_categories = Category.objects.filter(bid = bid, level = 1)
 	if max_level == 1:
-		json_categories = [x for x in lvl1_categories]
+		json_categories = [str(x) for x in lvl1_categories]
 	elif max_level == 2:
 		json_categories = {}
 		for c1 in lvl1_categories:

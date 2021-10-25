@@ -76,4 +76,25 @@ La pantalla de crear un convenio preguntará los siguientes campos:
 * Número de alternativas de producto: Cuantas alternativas de productos podrá ingresar un proveedor para cada ficha de producto.
 
 El ejemplo de CM Mobiliario se configuró de la siguiente manera:
+
 <img src="/images/create_bid.png" width="750px">
+
+#### 3.2.2. Vista de un convenio
+La vista de un convenio da acceso a 3 menús: 
+* Atributos del convenio: para administrar condiciones del convenio como transporte o dificultad de armado
+* Catálogo: para administrar el árbol de categorías, atributos y productos
+* Algoritmos: da acceso a los algoritmos que permiten automatizar tareas.
+<img src="/images/bid.png" width="750px">
+
+#### 3.2.3. Atributos del convenio
+En el ejemplo del CM Mobiliario hay 3 atributos modelados: Transporte rural, Transporte urbano y Dificultad de Armado. Los atributos se pueden editar y eliminar.
+<img src="/images/bidattributes.png" width="750px">
+
+#### 3.2.4 Crear atributo del convenio
+Se preguntan los siguientes campos:
+* Nombre del atributo.
+* ¿Se oferta a nivel nacional o por zona?: Si el atributo es ofertado a nivel nacional (ej: dificultad de armado) o a nivel de macrozona (ej: transporte).
+* Unidad: Moneda en la que se ofertará el atributo.
+
+A modo de ejemplo, se presenta la pantalla para el atributo transporte rural:
+<img src="/images/create_bidattribute.png" width="750px">
