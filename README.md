@@ -75,4 +75,5 @@ La pantalla de crear un convenio preguntará los siguientes campos:
 * Zonas: Si el convenio se oferta por zonas se deben agregar acá separadas por enter. Si se oferta a nivel nacional se puede agregar una sola zona "NACIONAL" o dejar el campo en blanco.
 * Número de alternativas de producto: Cuantas alternativas de productos podrá ingresar un proveedor para cada ficha de producto.
 
+El ejemplo de CM Mobiliario se configuró de la siguiente manera:
 <img src="/images/create_bid.png" width="750px">
