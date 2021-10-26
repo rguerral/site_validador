@@ -98,3 +98,35 @@ Se preguntan los siguientes campos:
 
 A modo de ejemplo, se presenta la pantalla para el atributo transporte rural:
 <img src="/images/create_bidattribute.png" width="750px">
+
+#### 3.2.5 Vista atributo del convenio
+La vista atributo del convenio muestra una tabla con los distintos niveles a los que ofertarán los proveedores. A modo de ejemplo se presentan pantallazos de los atributos dificultad de armado (que se oferta a nivel nacional) y transporte rural (que se oferta por zona).
+<img src="/images/bidattribute_global.png" width="750px">
+<img src="/images/bidattribute_zone.png" width="750px">
+
+#### 3.2.5 Crear nivel de atributo de convenio
+Al hacer click en agregar nivel se despliega un formulario en el que se debe agregar el nombre del nivel y las restricciones de precio que este tiene. Se presenta el nivel "dificultad baja" del atributo dificultad de armado a modo de ejemplo.
+<img src="/images/create_bidattributelevel.png" width="750px">
+
+#### 3.2.6. Catálogo
+Al entrar al menú catálogo veras el árbol de categorías. Puedes agregar categorías nivel 1 haciendo click en "Agregar categoría nivel 1" e ingresando el nombre de la categoría. Si definiste el convenio con "Niveles de categoría" > 1, podras profundizar en el árbol agregando categorías hijas. Para esto debes hacer click en el botón "+" de la columna Agregar. Las categorías que están más abajo en el árbol (categoría hoja) son configurables haciendo click en ellas. En el ejemplodel CM Mobiliario se fijo "Niveles de categoría = 1", por lo que el árbol no tiene profundidad.
+<img src="/images/categories.png" width="750px">
+
+#### 3.2.7. Categoría
+Cuando ingresas a una categoría hoja veras dos secciones "Atributos" y "Productos". En cada una te estas secciones veras un botón para agregar nuevos objetos. Asi se ve la categoría "SILLA DE ESCRITORIO" configurada.
+<img src="/images/category.png" width="750px">
+Como podras notar, las tablas tienen varios conceptos,los cuales serán explicados en las siguientes secciones. Es importante destacar por ahora que **el flujo de trabajo se pensó para crear los atributos primero y luego los productos**. Crear un atributo borrará los productos previamente creados en la categoría.
+
+#### 3.2.8. Crear atributo
+El formulario de creación de un atributo consiste en:
+* Nombre atributo
+* Restricciones a nivel nacional o por zona: Si las restricciones del atributo serán fijadas a nivel nacional o por zona. A modo de ejemplo tomemos el caso del atributo Precio: si se desea que los productos tengan un precio minimo y maximo identico para todo Chile, entonces se debe ingresar el valor "Nacional". En el caso contrario, si se desea variar el precio minimo y maximo para cada zona definida, entonces se debe seleccionar "Zona".
+* ¿Valor fijo?: Indica si el valor del atributo será fijado por chilecompra ("SI") o si debe ser completado por el proveedor ("NO").
+* Tipo atributo: Se debe seleccionar si el atributo es nominal o ratio. Recordar que los atributos nominales son aquellos que toman valores discretos mientras que los atributos ratio son aquellos que toman valores conformados por un valor númerico más una unidad de medida. Dependiendo de lo que se seleccione en este campo apareceran más campos.
+* ¿Acepta otros valores?: Se debe configurar solo si *¿Valor fijo? = NO* y *Tipo atributo = NOMINAL*. Si se selecciona que "NO", entonces el proveedor podra ingresar solo valores del listado definido para ese producto. Por ejemplo, el atributo "¿Tiene Ruedas?" es configurado para no aceptar nuevos valores ya que se busca que el proveedor ingrese un valor dentro de los definidos: "Si" o "No". Por otro lado, veamos el ejemplo del atributo "Marca". Porbablemente para "Marca" queramos fijar este campo como "Si", ya que buscamos que el proveedor ingrese una marca del listado predefinido, pero si su producto es de una marca que no aparece en el listado, darle la libertad de poder agregarla.
+* Unidad: Se debe configurar cuando el atributo es ratio. Corresponde a la unidad de medida del atributo, p.ej. "CENTIMETRO", "PESO CHILENO", "KILOGRAMO", etc.
+* ¿Solo valores enteros?: Se debe configurar solo si *¿Valor fijo? = NO* y *Tipo atributo = RATIO*. Indica si el valor numerico ingresado por el proveedor puede tomar solo valores enteros ("SI") o si permite ingresar decimales ("NO").
+
+A modo de ejemplo se muestra la configuración de dos atributos para el TP "Silla de Escritorio"
+<img src="/images/attribute1.png" width="750px">
+<img src="/images/attribute2.png" width="750px">

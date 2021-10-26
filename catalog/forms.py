@@ -141,7 +141,7 @@ class AttributeForm(forms.ModelForm):
 		labels = {
         	"name": "Nombre atributo",
         	"attribute_type": "Tipo de atributo",
-        	"zone_or_global": "Se oferta a nacional o por zona",
+        	"zone_or_global": "Restricciones a nivel nacional o por zona",
         	"fixed": "¿Valor fijo?",
         	"unit": "Unidad",
         	"accept_others": "¿Acepta otros valores?",
