@@ -127,6 +127,30 @@ El formulario de creación de un atributo consiste en:
 * Unidad: Se debe configurar cuando el atributo es ratio. Corresponde a la unidad de medida del atributo, p.ej. "CENTIMETRO", "PESO CHILENO", "KILOGRAMO", etc.
 * ¿Solo valores enteros?: Se debe configurar solo si *¿Valor fijo? = NO* y *Tipo atributo = RATIO*. Indica si el valor numerico ingresado por el proveedor puede tomar solo valores enteros ("SI") o si permite ingresar decimales ("NO").
 
-A modo de ejemplo se muestra la configuración de dos atributos para el TP "Silla de Escritorio"
+A modo de ejemplo se muestra la configuración de dos atributos para el TP "Silla de Escritorio".
 <img src="/images/attribute1.png" width="750px">
 <img src="/images/attribute2.png" width="750px">
+
+#### 3.2.8. Crear producto
+Al crear un producto se abre un menú que muestra los atributos definidos para la categoría y campos para configurar sus valores. Hay cuatro tipos de atributos:
+* Nominales fijos: Se debe ingresar el valor fijo del atributo
+* Ratio fijos: Se debe ingresar el valor fijo del atributo
+* Nominales variables: Se deben ingresar los posibles valores separados por enter
+* Ratio variables: Se debe ingresar los valores numericos minimo y maximo que puede tomar el atributo.
+Además se muestra un campo llamado "Modelo". Se puede pensar en este campo como un nombre corto para el producto, por ejemplo: Gama Baja.
+
+A modo de ejemplo, esta es la configuración para la Gama 1 del TP Silla de Escritorio.
+<img src="/images/create_product.png" width="750px">
+
+#### 3.2.9. Algoritmos
+Hay 4 menús en esta vista. Cada uno genera un productos descargables. En la carpeta *ejemplos output* está el ejemplo de cada uno para el CM Mobiliario.
+
+<img src="/images/algorithms.png" width="750px">
+
+* Descargar JSON: Permite descargar todo el modelo de datos del convenio en un formato JSON estructurado.
+* Descargar planilla excel: Descarga la planilla excel para la recepción de ofertas. Cada hoja de la planilla corresponde a un atributo del convenio o un TP. Las celdas tienen restricciones para evitar que el proveedor cometa errores. 
+* Simular ofertas: Permite simular planillas de ofertas completadas por un proveedor. Se pueden simular los errores que comunmente cometen los proveedores mediante probabilidades, tal como se muestra en las instrucciones:
+
+<img src="/images/simulate.png" width="750px">
+
+* Validar ofertas: El menú desplegable permite cargar multiples planillas de ofertas completadas (ya sea simuladas o reales). Estas serán procesadas para validar que se cumplan las reglas ingresadas en la plataforma para el convenio. Al ser procesadas, la plataforma entrega un archivo excel que consolida todas las ofertas en una sola hoja, con una columna que informa el estado ("OK" o "ERROR") de una oferta.
